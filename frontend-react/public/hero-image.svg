@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Shield -->
+  <path d="M400 50L750 200V450L400 550L50 450V200L400 50Z" fill="#FFFFFF" fill-opacity="0.1"/>
+  
+  <!-- Shield Border -->
+  <path d="M400 50L750 200V450L400 550L50 450V200L400 50Z" stroke="#FFFFFF" stroke-width="4"/>
+  
+  <!-- Central Circle -->
+  <circle cx="400" cy="300" r="150" fill="#FFFFFF" fill-opacity="0.2"/>
+  
+  <!-- Connection Lines -->
+  <path d="M400 150L400 450" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="10 5"/>
+  <path d="M250 300L550 300" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="10 5"/>
+  
+  <!-- Decorative Elements -->
+  <circle cx="400" cy="300" r="20" fill="#FFFFFF"/>
+  <circle cx="400" cy="300" r="10" fill="#2E7D32"/>
+  
+  <!-- Small Connecting Nodes -->
+  <circle cx="400" cy="150" r="8" fill="#FFFFFF"/>
+  <circle cx="400" cy="450" r="8" fill="#FFFFFF"/>
+  <circle cx="250" cy="300" r="8" fill="#FFFFFF"/>
+  <circle cx="550" cy="300" r="8" fill="#FFFFFF"/>
+  
+  <!-- Pulsing Animation Elements -->
+  <circle cx="400" cy="300" r="180" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.3">
+    <animate attributeName="r" values="180;200;180" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-opacity" values="0.3;0.1;0.3" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Additional Decorative Elements -->
+  <path d="M350 250L450 250" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.5"/>
+  <path d="M350 350L450 350" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.5"/>
+</svg> 
