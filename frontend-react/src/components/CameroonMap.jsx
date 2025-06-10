@@ -1,88 +1,59 @@
 import React from 'react';
 import { Box, Typography, Stack } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import cameroonGeoJSON from '../assets/cm.json';
 
-// Cameroon map data with more accurate region names and data
-export const cameroonRegions = [
-  { 
-    name: 'North', 
-    cases: 120, 
-    digitalPenetration: 35, 
-    color: '#2563EB',
-    path: 'M 300,50 L 350,80 L 400,70 L 450,100 L 420,150 L 380,180 L 320,160 L 280,120 Z'
-  },
-  { 
-    name: 'Far North', 
-    cases: 150, 
-    digitalPenetration: 30, 
-    color: '#1E40AF',
-    path: 'M 280,120 L 320,160 L 380,180 L 350,220 L 300,240 L 250,200 L 220,160 Z'
-  },
-  { 
-    name: 'Adamawa', 
-    cases: 90, 
-    digitalPenetration: 40, 
-    color: '#3B82F6',
-    path: 'M 350,220 L 380,180 L 420,150 L 450,100 L 500,120 L 480,180 L 420,220 L 380,240 Z'
-  },
-  { 
-    name: 'East', 
-    cases: 80, 
-    digitalPenetration: 45, 
-    color: '#60A5FA',
-    path: 'M 420,220 L 480,180 L 500,120 L 550,150 L 520,220 L 480,280 L 420,260 Z'
-  },
-  { 
-    name: 'Centre', 
-    cases: 200, 
-    digitalPenetration: 65, 
-    color: '#7C3AED',
-    path: 'M 300,240 L 350,220 L 380,240 L 420,260 L 380,300 L 320,280 L 280,260 Z'
-  },
-  { 
-    name: 'South', 
-    cases: 110, 
-    digitalPenetration: 50, 
-    color: '#6D28D9',
-    path: 'M 280,260 L 320,280 L 380,300 L 350,340 L 300,360 L 250,320 L 220,280 Z'
-  },
-  { 
-    name: 'Littoral', 
-    cases: 180, 
-    digitalPenetration: 70, 
-    color: '#8B5CF6',
-    path: 'M 220,160 L 250,200 L 280,240 L 300,240 L 320,280 L 280,260 L 250,320 L 220,280 L 200,240 L 180,200 Z'
-  },
-  { 
-    name: 'West', 
-    cases: 130, 
-    digitalPenetration: 55, 
-    color: '#A78BFA',
-    path: 'M 180,200 L 200,240 L 220,280 L 250,320 L 220,360 L 180,340 L 160,300 L 150,260 L 170,220 Z'
-  },
-  { 
-    name: 'North-West', 
-    cases: 160, 
-    digitalPenetration: 45, 
-    color: '#059669',
-    path: 'M 150,260 L 160,300 L 180,340 L 220,360 L 250,320 L 280,260 L 250,200 L 220,160 L 180,200 L 170,220 Z'
-  },
-  { 
-    name: 'South-West', 
-    cases: 140, 
-    digitalPenetration: 50, 
-    color: '#10B981',
-    path: 'M 180,340 L 220,360 L 250,320 L 300,360 L 280,400 L 240,420 L 200,400 L 170,380 Z'
-  }
-];
+// Color scheme for regions
+const regionColors = {
+  'Nord': '#2563EB',
+  'Extrême-Nord': '#1E40AF',
+  'Adamaoua': '#3B82F6',
+  'Est': '#60A5FA',
+  'Centre': '#7C3AED',
+  'Sud': '#6D28D9',
+  'Littoral': '#8B5CF6',
+  'Ouest': '#A78BFA',
+  'Nord-Ouest': '#059669',
+  'Sud-Ouest': '#10B981'
+};
+
+// Sample data for regions (you can replace this with real data)
+const regionData = {
+  'Nord': { cases: 120, digitalPenetration: 35 },
+  'Extrême-Nord': { cases: 150, digitalPenetration: 30 },
+  'Adamaoua': { cases: 90, digitalPenetration: 40 },
+  'Est': { cases: 80, digitalPenetration: 45 },
+  'Centre': { cases: 200, digitalPenetration: 65 },
+  'Sud': { cases: 110, digitalPenetration: 50 },
+  'Littoral': { cases: 180, digitalPenetration: 70 },
+  'Ouest': { cases: 130, digitalPenetration: 55 },
+  'Nord-Ouest': { cases: 160, digitalPenetration: 45 },
+  'Sud-Ouest': { cases: 140, digitalPenetration: 50 }
+};
 
 const CameroonMap = ({ setHoveredRegion }) => {
+  // Function to convert GeoJSON coordinates to SVG path
+  const coordinatesToPath = (coordinates) => {
+    if (!coordinates || !coordinates.length) return '';
+    
+    // Handle both Polygon and MultiPolygon types
+    const paths = Array.isArray(coordinates[0][0][0]) ? coordinates : [coordinates];
+    
+    return paths.map(polygon => {
+      return polygon.map((ring, i) => {
+        // Flip y-coordinate for SVG (Cameroon latitude range: 1.5 to 13)
+        const points = ring.map(([x, y]) => `${x},${13 - y + 1.5}`).join(' ');
+        return `${i === 0 ? 'M' : 'L'} ${points} Z`;
+      }).join(' ');
+    }).join(' ');
+  };
+
   return (
     <Box
       sx={{
         position: 'relative',
         width: '100%',
-        height: 500, // Increased height for better visibility
+        height: 500,
         bgcolor: 'background.paper',
         borderRadius: 4,
         overflow: 'hidden',
@@ -105,36 +76,40 @@ const CameroonMap = ({ setHoveredRegion }) => {
         {/* Map SVG */}
         <Box
           component="svg"
-          viewBox="0 0 800 600"
+          viewBox="8.5 1.5 7.5 11.5"
           sx={{
-            width: '100%',
-            height: '100%',
+            width: '75%',
+            height: '75%',
             '& path': {
               transition: 'all 0.3s ease',
               cursor: 'pointer',
-              stroke: '#fff',
-              strokeWidth: 1,
+              stroke: '#1a1a1a',
+              strokeWidth: 0.3,
               '&:hover': {
                 filter: 'brightness(1.1)',
                 transform: 'scale(1.02)',
-                strokeWidth: 2,
+                strokeWidth: 0.5,
               },
             },
           }}
         >
           {/* Cameroon Map Paths */}
-          <g transform="translate(50,50) scale(0.9)">
-            {cameroonRegions.map((region, index) => (
+          {cameroonGeoJSON.features.map((feature) => {
+            const regionName = feature.properties.name;
+            const data = regionData[regionName] || { cases: 0, digitalPenetration: 0 };
+            const color = regionColors[regionName] || '#ccc';
+            
+            return (
               <path
-                key={region.name}
-                d={region.path}
-                fill={region.color}
+                key={regionName}
+                d={coordinatesToPath(feature.geometry.coordinates)}
+                fill={color}
                 opacity={0.7}
-                onMouseEnter={() => setHoveredRegion(region)}
+                onMouseEnter={() => setHoveredRegion({ name: regionName, ...data, color })}
                 onMouseLeave={() => setHoveredRegion(null)}
               />
-            ))}
-          </g>
+            );
+          })}
         </Box>
 
         {/* Map Legend */}

@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, Typography, useTheme, Card, CardContent, Avatar, Chip, Divider, Paper, IconButton, Stack, useMediaQuery, Tabs, Tab, TextField, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Button, Container, Grid, Typography, useTheme, Card, CardContent, Avatar, Chip, Divider, Paper, IconButton, Stack, useMediaQuery, Tabs, Tab, TextField, List, ListItem, ListItemIcon, ListItemText, AppBar, Toolbar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SecurityIcon from '@mui/icons-material/Security';
 import GavelIcon from '@mui/icons-material/Gavel';
@@ -24,7 +24,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useState, useEffect } from 'react';
 import { alpha, keyframes } from '@mui/material/styles';
 import React from 'react';
-import CameroonMap, { cameroonRegions } from '../../src/components/CameroonMap';
+import CameroonMap from '../../src/components/CameroonMap';
 
 // Custom animations
 const floatAnimation = keyframes`
@@ -933,7 +933,6 @@ const ModernHero = () => {
         alignItems: 'center',
         overflow: 'hidden',
         bgcolor: modernColors.background.default,
-        // Enhanced background with gradient and subtle pattern
         background: `linear-gradient(135deg, ${cameroonColors.primary.main} 0%, ${cameroonColors.accent.yellow} 100%)`,
         '&::before': {
           content: '""',
@@ -946,14 +945,14 @@ const ModernHero = () => {
           opacity: 0.1,
           zIndex: 0,
         },
-        '&::after': { // New pseudo-element for cultural pattern overlay
+        '&::after': {
           content: '""',
           position: 'absolute',
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
-          ...cameroonPatterns.geometric, // Apply a subtle geometric pattern
+          ...cameroonPatterns.geometric,
           opacity: 0.1,
           zIndex: 0,
         },
@@ -969,19 +968,15 @@ const ModernHero = () => {
                   fontWeight: 800,
                   fontSize: { xs: '2.5rem', md: '3.5rem' },
                   mb: 2,
-                  background: modernColors.background.gradient,
-                  backgroundClip: 'text',
-                  textFillColor: 'transparent',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
+                  color: '#1A237E', // Solid deep blue for contrast
+                  textShadow: '0 2px 8px rgba(0,0,0,0.08)',
                 }}
               >
-                Protecting Cameroon's Digital Space
+                Sui-Ru: Protecting Cameroon's Digital Space
               </Typography>
               <Typography
                 variant="h5"
-                color="text.secondary"
-                sx={{ mb: 4, fontWeight: 400 }}
+                sx={{ mb: 4, fontWeight: 400, color: '#212121' }} // Solid dark gray for subtitle
               >
                 Combating misinformation and hate speech across all regions of Cameroon
               </Typography>
@@ -1365,6 +1360,39 @@ const Landing = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: modernColors.background.default }}>
+      {/* Header Navigation Bar */}
+      <AppBar position="static" color="inherit" elevation={0} sx={{ borderBottom: '1px solid #eee' }}>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }} onClick={() => navigate('/') }>
+            <Avatar sx={{ bgcolor: 'primary.main', width: 36, height: 36, mr: 1 }}>SR</Avatar>
+            <Typography variant="h6" fontWeight={700} color="primary.main">Sui-Ru</Typography>
+          </Box>
+          <Box>
+            <Button color="inherit" onClick={() => navigate('/about')} sx={{ mr: 1 }}>
+              About
+            </Button>
+            <Button color="inherit" onClick={() => navigate('/contact')} sx={{ mr: 1 }}>
+              Contact
+            </Button>
+            <Button color="inherit" onClick={() => navigate('/faq')} sx={{ mr: 1 }}>
+              FAQ
+            </Button>
+            <Button color="inherit" onClick={() => navigate('/blog')} sx={{ mr: 1 }}>
+              Blog
+            </Button>
+            <Button color="inherit" onClick={() => navigate('/feedback')} sx={{ mr: 2 }}>
+              Feedback
+            </Button>
+            <Button color="primary" onClick={() => navigate('/dashboard')} sx={{ mr: 2 }}>
+              Login
+            </Button>
+            <Button variant="contained" color="primary" onClick={() => navigate('/signup')}>
+              Sign Up
+            </Button>
+          </Box>
+        </Toolbar>
+      </AppBar>
+      {/* Main Content */}
       <ModernHero />
       
       {/* Enhanced Features Section */}
