@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import { useNavigate } from 'react-router-dom';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
@@ -13,6 +14,7 @@ import InteractiveMap from '../InteractiveMapLeaflet';
 
 const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
   const { colors } = useTheme();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [realTimeData, setRealTimeData] = useState({
     totalContent: 2480000,
@@ -24,7 +26,7 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
 
   const [selectedTimeframe, setSelectedTimeframe] = useState('24h');
   const [isLive, setIsLive] = useState(true);
-  const [connectionStatus, setConnectionStatus] = useState('connected'); // Default to 'connected' or 'disconnected'
+  const [connectionStatus] = useState('connected'); // Remove setConnectionStatus to fix eslint warning
 
   // Mock real-time data updates
   useEffect(() => {
@@ -650,12 +652,16 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
     }
   };
 
+  const handleAnalystClick = () => {
+    navigate('/analyst');
+  };
+
   return (
     <div 
       className="min-h-screen transition-all duration-500"
       style={{ backgroundColor: colors.bg }}
     >
-      <SideNavigation activeTab={activeTab} setActiveTab={setActiveTab} onLogout={onLogout} onAnalystClick={onAnalystClick} />
+      <SideNavigation activeTab={activeTab} setActiveTab={setActiveTab} onLogout={onLogout} onAnalystClick={handleAnalystClick} />
       
       <div className="ml-64 pt-16">
         {/* Header */}

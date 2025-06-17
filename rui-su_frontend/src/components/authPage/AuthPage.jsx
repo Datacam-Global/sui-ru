@@ -6,6 +6,7 @@ import { Mail, Lock, LogIn, ArrowLeft } from 'lucide-react';
 import axiosInstance from '../..//axiosInstance';
 import { AuthContext } from '../../AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import PageLoader from '../common/PageLoader'; // Import the PageLoader component
 
 
 const AuthPage = ({ onBack, setUser }) => {
@@ -13,12 +14,14 @@ const AuthPage = ({ onBack, setUser }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state
   const { setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true); // Set loading to true on submit
     try {
       const response = await axiosInstance.post('/auth/login/', { username, password });
       const accessToken = response.data.access || response.data.accessToken;
@@ -36,6 +39,8 @@ const AuthPage = ({ onBack, setUser }) => {
       setError(
         err.response?.data?.detail || 'Login failed. Please check your credentials.'
       );
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
 
@@ -43,6 +48,7 @@ const AuthPage = ({ onBack, setUser }) => {
     <div className="flex items-center justify-center min-h-screen p-4"
       style={{ backgroundColor: colors.bgSecondary }}
     >
+      {loading && <PageLoader isLoading={true} />}
       <Card className="w-full max-w-md p-8 space-y-6 text-center">
         <div className="flex justify-between items-center">
           <Button variant="ghost" size="icon" onClick={onBack}>

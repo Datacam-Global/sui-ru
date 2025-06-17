@@ -19,6 +19,8 @@ import PrivateRoutes from './PrivateRoutes';
 import AlertManagementPage from './dashboard/AlertManagementPage';
 import PlatformAnalysisPage from './dashboard/PlatformAnalysisPage';
 import { AuthContext } from './AuthProvider';
+import AnalystWorkstation from './components/analystWorkstation/AnalystWorkstation';
+
 
 function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
   const { colors } = useTheme();
@@ -30,35 +32,50 @@ function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
   // Navigation helpers
   const handleAuthClick = (mode = 'login') => {
     setAuthMode(mode);
-    navigate('/auth');
+    setIsLoading(true);
+    setTimeout(() => {
+      navigate('/auth');
+      setIsLoading(false);
+    }, 500);
   };
 
   const handleDemoClick = () => {
-    setUser({
-      name: 'Alex Johnson',
-      role: 'Senior Analyst',
-      email: 'alex.johnson@fonsee.ai'
-    });
-    navigate('/dashboard');
+    setIsLoading(true);
+    setTimeout(() => {
+      setUser({
+        name: 'Alex Johnson',
+        role: 'Senior Analyst',
+        email: 'alex.johnson@fonsee.ai'
+      });
+      setIsLoading(false);
+      navigate('/dashboard');
+    }, 1000);
   };
 
   const handleAnalystClick = () => {
-    navigate('/analyst');
+    setIsLoading(true);
+    setTimeout(() => {
+      navigate('/analyst');
+      setIsLoading(false);
+    }, 500);
   };
 
   const handleLogout = () => {
+    setIsLoading(true);
     if (typeof setIsLoggedIn === 'function') {
       setIsLoggedIn(false);
     }
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     if (typeof window !== 'undefined') {
-      // Defensive: clear tokens if they exist
       window.localStorage.removeItem('accessToken');
       window.localStorage.removeItem('refreshToken');
     }
     setUser(null);
-    navigate('/');
+    setTimeout(() => {
+      setIsLoading(false);
+      navigate('/');
+    }, 500);
   };
 
   const handleAuthSubmit = () => {
@@ -116,6 +133,7 @@ function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
         <Route path="/dashboard" element={<PrivateRoutes><ExecutiveDashboard user={user} onLogout={handleLogout} onAnalystClick={handleAnalystClick} /></PrivateRoutes>} />
         <Route path="/platform-analysis" element={<PrivateRoutes><PlatformAnalysisPage /></PrivateRoutes>} />
         <Route path="/reports" element={<PrivateRoutes><ReportPage /></PrivateRoutes>} />
+        <Route path="/analyst" element={<PrivateRoutes><AnalystWorkstation onLogout={handleLogout} /></PrivateRoutes>} />
       </Routes>
       <ChatbotOverlay />
     </div>
