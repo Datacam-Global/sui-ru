@@ -10,9 +10,6 @@ local_settings.py
 media/
 !media/.gitkeep
 
-# Static files
-staticfiles/
-!staticfiles/.gitkeep
 
 # Environment variables
 .env
