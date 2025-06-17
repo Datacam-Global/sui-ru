@@ -4,6 +4,7 @@ import Card from '../ui/Card';
 import Button from '../ui/Button';
 import { Mail, Lock, UserPlus, LogIn, ArrowLeft } from 'lucide-react';
 
+
 const AuthPage = ({ mode, onSubmit, onModeSwitch, onBack }) => {
   const { colors } = useTheme();
   const [email, setEmail] = useState('');
