@@ -23,7 +23,7 @@ const AuthPage = ({ onBack, setUser }) => {
     setError('');
     setLoading(true); // Set loading to true on submit
     try {
-      const response = await axiosInstance.post('/auth/login/', { username, password });
+      const response = await axiosInstance.post('/api/auth/login/', { username, password });
       const accessToken = response.data.access || response.data.accessToken;
       const refreshToken = response.data.refresh || response.data.refreshToken;
       if (accessToken && refreshToken) {
