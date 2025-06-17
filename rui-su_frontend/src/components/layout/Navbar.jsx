@@ -1,11 +1,13 @@
-import React from 'react';
-import { Shield, Menu, X, Home, MessageSquare, Camera, Flag, Phone, User } from 'lucide-react';
+import React, { useContext } from 'react';
+import { Shield, Menu, X, Home, MessageSquare, Camera, Flag, Phone } from 'lucide-react'; // Removed unused 'User'
 import { useTheme } from '../../contexts/ThemeContext';
 import Button from '../ui/Button';
 import ThemeToggle from '../common/ThemeToggle';
+import { AuthContext } from '../../AuthProvider';
 
-const Navbar = ({ user, handleLogout, handleAuthClick, navigateWithLoading, isMobileMenuOpen, setIsMobileMenuOpen }) => {
+const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMenuOpen, setIsMobileMenuOpen, user }) => {
   const { colors } = useTheme();
+  const { isLoggedIn } = useContext(AuthContext);
 
   return (
     <nav 
@@ -113,33 +115,21 @@ const Navbar = ({ user, handleLogout, handleAuthClick, navigateWithLoading, isMo
 
           <div className="flex items-center space-x-4">
             <ThemeToggle />
-            {user ? (
-              <>
-                <div className="flex items-center space-x-3">
-                  <div className="text-right">
-                    <p className="text-sm font-medium" style={{ color: colors.text }}>{user.name}</p>
-                    <p className="text-xs" style={{ color: colors.textMuted }}>{user.role}</p>
-                  </div>
-                  <div 
-                    className="w-8 h-8 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: colors.bgTertiary }}
-                  >
-                    <User className="w-4 h-4" style={{ color: colors.textSecondary }} />
-                  </div>
-                </div>
-                <Button variant="ghost" onClick={handleLogout}>
-                  Logout
-                </Button>
-              </>
-            ) : (
+            {isLoggedIn && user ? (
               <div className="flex items-center space-x-2">
-                <Button variant="ghost" onClick={() => handleAuthClick("login")}>
-                  Login
-                </Button>
-                <Button variant="primary" onClick={() => handleAuthClick("register")}>
-                  Sign Up
-                </Button>
+                <div className="px-3 py-1 rounded bg-gray-100 text-gray-800 font-medium">
+                  {user.name}
+                </div>
               </div>
+            ) : null}
+            {isLoggedIn ? (
+              <Button variant="ghost" onClick={handleLogout}>
+                Logout
+              </Button>
+            ) : (
+              <Button variant="ghost" onClick={() => handleAuthClick("login")}>
+                Login
+              </Button>
             )}
           </div>
         </div>

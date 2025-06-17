@@ -7,7 +7,6 @@ import MobileMenu from './components/layout/MobileMenu';
 import LandingPage from './pages/LandingPage';
 import AuthPage from './components/authPage/AuthPage';
 import ExecutiveDashboard from './dashboard/ExecutiveDashboard';
-import AnalystWorkstation from './components/analystWorkstation/AnalystWorkstation';
 import AboutPage from './pages/AboutPage';
 import FAQPage from './pages/FAQPage';
 import ChatbotPage from './pages/ChatbotPage';
@@ -15,12 +14,18 @@ import ImageDetectionPage from './pages/ImageDetectionPage';
 import ReportPage from './pages/ReportPage';
 import ContactPage from './pages/ContactPage';
 import ChatbotOverlay from './components/common/ChatbotOverlay'; 
+import PublicRoute from './PublicRoutes';
+import PrivateRoutes from './PrivateRoutes';
+import AlertManagementPage from './dashboard/AlertManagementPage';
+import PlatformAnalysisPage from './dashboard/PlatformAnalysisPage';
+import { AuthContext } from './AuthProvider';
 
 function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
   const { colors } = useTheme();
   const [authMode, setAuthMode] = useState('login');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { setIsLoggedIn } = React.useContext(AuthContext);
 
   // Navigation helpers
   const handleAuthClick = (mode = 'login') => {
@@ -42,6 +47,16 @@ function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
   };
 
   const handleLogout = () => {
+    if (typeof setIsLoggedIn === 'function') {
+      setIsLoggedIn(false);
+    }
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    if (typeof window !== 'undefined') {
+      // Defensive: clear tokens if they exist
+      window.localStorage.removeItem('accessToken');
+      window.localStorage.removeItem('refreshToken');
+    }
     setUser(null);
     navigate('/');
   };
@@ -52,7 +67,6 @@ function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
       role: 'Senior Analyst',
       email: authMode === 'login' ? 'alex.johnson@fonsee.ai' : 'newuser@fonsee.ai'
     });
-    navigate('/dashboard');
   };
 
   return (
@@ -62,11 +76,12 @@ function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
     >
       <PageLoader isLoading={isLoading} />
       <Navbar 
-        user={user} 
+        user={user}
+        handleLogout={handleLogout}
         handleAuthClick={handleAuthClick}
-        onLogout={handleLogout}
         navigateWithLoading={navigate}
-        toggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        isMobileMenuOpen={isMobileMenuOpen}
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
       />
       <MobileMenu 
         isOpen={isMobileMenuOpen} 
@@ -77,24 +92,30 @@ function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
         user={user}
       />
       <Routes>
-        <Route path="/" element={<LandingPage onAuthClick={handleAuthClick} onDemoClick={handleDemoClick} />} />
+        {/* Public routes */}
+        <Route path="/" element={<PublicRoute><LandingPage onAuthClick={handleAuthClick} onDemoClick={handleDemoClick} /></PublicRoute>} />
         <Route path="/auth" element={
-          <AuthPage 
-            mode={authMode} 
-            onSubmit={handleAuthSubmit}
-            onModeSwitch={setAuthMode}
-            onBack={() => navigate('/')}
-          />
+          <PublicRoute>
+            <AuthPage 
+              setUser={setUser}
+              mode={authMode} 
+              onSubmit={handleAuthSubmit}
+              onModeSwitch={setAuthMode}
+              onBack={() => navigate('/')}
+            />
+          </PublicRoute>
         } />
-        <Route path="/dashboard" element={user ? <ExecutiveDashboard user={user} onLogout={handleLogout} onAnalystClick={handleAnalystClick} /> : <LandingPage onAuthClick={handleAuthClick} onDemoClick={handleDemoClick} />} />
-        <Route path="/analyst" element={user ? <AnalystWorkstation user={user} onLogout={handleLogout} /> : <LandingPage onAuthClick={handleAuthClick} onDemoClick={handleDemoClick} />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/faq" element={<FAQPage />} />
-        <Route path="/chatbot" element={<ChatbotPage />} />
-        <Route path="/image-detection" element={<ImageDetectionPage />} />
-        <Route path="/report" element={<ReportPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        {/* Add a catch-all route for 404 if desired */}
+        <Route path="/image-detection" element={<ImageDetectionPage />} />
+        <Route path="/chatbot" element={<ChatbotPage />} />
+        <Route path="/report" element={<ReportPage />} />
+        {/* Private routes */}
+        <Route path="/alert-management" element={<PrivateRoutes><AlertManagementPage /></PrivateRoutes>} />
+        <Route path="/dashboard" element={<PrivateRoutes><ExecutiveDashboard user={user} onLogout={handleLogout} onAnalystClick={handleAnalystClick} /></PrivateRoutes>} />
+        <Route path="/platform-analysis" element={<PrivateRoutes><PlatformAnalysisPage /></PrivateRoutes>} />
+        <Route path="/reports" element={<PrivateRoutes><ReportPage /></PrivateRoutes>} />
       </Routes>
       <ChatbotOverlay />
     </div>

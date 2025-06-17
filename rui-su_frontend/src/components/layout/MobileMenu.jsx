@@ -1,13 +1,13 @@
 import React from 'react';
-import { Home, MessageSquare, Camera, Flag, Phone } from 'lucide-react';
+import { Home, MessageSquare, Camera, Flag, Phone } from 'lucide-react'; // Removed unused Menu, X
 import { useTheme } from '../../contexts/ThemeContext';
 import Button from '../ui/Button';
 
-const MobileMenu = ({ user, handleAuthClick, navigateWithLoading, isMobileMenuOpen, setIsMobileMenuOpen }) => {
+const MobileMenu = ({ user, handleAuthClick, navigateWithLoading, isOpen, onClose }) => {
   const { colors } = useTheme();
 
   return (
-    isMobileMenuOpen && (
+    isOpen && (
       <div 
         className="fixed top-16 left-0 right-0 z-40 md:hidden backdrop-blur-md border-b transition-all duration-300"
         style={{ 
@@ -22,7 +22,7 @@ const MobileMenu = ({ user, handleAuthClick, navigateWithLoading, isMobileMenuOp
               size="sm"
               onClick={() => {
                 navigateWithLoading('landing', 500);
-                setIsMobileMenuOpen(false);
+                onClose();
               }}
               className="text-sm font-medium hover:scale-105 transition-transform justify-start"
             >
@@ -34,7 +34,7 @@ const MobileMenu = ({ user, handleAuthClick, navigateWithLoading, isMobileMenuOp
               size="sm"
               onClick={() => {
                 navigateWithLoading('about', 500);
-                setIsMobileMenuOpen(false);
+                onClose();
               }}
               className="text-sm font-medium hover:scale-105 transition-transform justify-start"
             >
@@ -45,7 +45,7 @@ const MobileMenu = ({ user, handleAuthClick, navigateWithLoading, isMobileMenuOp
               size="sm"
               onClick={() => {
                 navigateWithLoading('faq', 500);
-                setIsMobileMenuOpen(false);
+                onClose();
               }}
               className="text-sm font-medium hover:scale-105 transition-transform justify-start"
             >
@@ -56,7 +56,7 @@ const MobileMenu = ({ user, handleAuthClick, navigateWithLoading, isMobileMenuOp
               size="sm"
               onClick={() => {
                 navigateWithLoading('chatbot', 500);
-                setIsMobileMenuOpen(false);
+                onClose();
               }}
               className="text-sm font-medium hover:scale-105 transition-transform justify-start"
             >
@@ -68,7 +68,7 @@ const MobileMenu = ({ user, handleAuthClick, navigateWithLoading, isMobileMenuOp
               size="sm"
               onClick={() => {
                 navigateWithLoading('image-detection', 500);
-                setIsMobileMenuOpen(false);
+                onClose();
               }}
               className="text-sm font-medium hover:scale-105 transition-transform justify-start"
             >
@@ -80,7 +80,7 @@ const MobileMenu = ({ user, handleAuthClick, navigateWithLoading, isMobileMenuOp
               size="sm"
               onClick={() => {
                 navigateWithLoading('report', 500);
-                setIsMobileMenuOpen(false);
+                onClose();
               }}
               className="text-sm font-medium hover:scale-105 transition-transform justify-start"
             >
@@ -92,7 +92,7 @@ const MobileMenu = ({ user, handleAuthClick, navigateWithLoading, isMobileMenuOp
               size="sm"
               onClick={() => {
                 navigateWithLoading('contact', 500);
-                setIsMobileMenuOpen(false);
+                onClose();
               }}
               className="text-sm font-medium hover:scale-105 transition-transform justify-start"
             >
@@ -108,7 +108,7 @@ const MobileMenu = ({ user, handleAuthClick, navigateWithLoading, isMobileMenuOp
                     variant="ghost" 
                     onClick={() => {
                       handleAuthClick('login');
-                      setIsMobileMenuOpen(false);
+                      onClose();
                     }}
                     className="justify-start"
                   >
@@ -118,7 +118,7 @@ const MobileMenu = ({ user, handleAuthClick, navigateWithLoading, isMobileMenuOp
                     variant="primary" 
                     onClick={() => {
                       handleAuthClick('register');
-                      setIsMobileMenuOpen(false);
+                      onClose();
                     }}
                     className="justify-start"
                   >

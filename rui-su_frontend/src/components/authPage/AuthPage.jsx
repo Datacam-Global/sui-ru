@@ -1,19 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
-import { Mail, Lock, UserPlus, LogIn, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, LogIn, ArrowLeft } from 'lucide-react';
+import axiosInstance from '../..//axiosInstance';
+import { AuthContext } from '../../AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 
-const AuthPage = ({ mode, onSubmit, onModeSwitch, onBack }) => {
+const AuthPage = ({ onBack, setUser }) => {
   const { colors } = useTheme();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const { setIsLoggedIn } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({ email, password });
+    setError('');
+    try {
+      const response = await axiosInstance.post('/auth/login/', { username, password });
+      const accessToken = response.data.access || response.data.accessToken;
+      const refreshToken = response.data.refresh || response.data.refreshToken;
+      if (accessToken && refreshToken) {
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+      }
+      setIsLoggedIn(true);
+      if (setUser && response.data.user) {
+        setUser(response.data.user);
+      }
+      navigate('/dashboard');
+    } catch (err) {
+      setError(
+        err.response?.data?.detail || 'Login failed. Please check your credentials.'
+      );
+    }
   };
 
   return (
@@ -26,28 +49,30 @@ const AuthPage = ({ mode, onSubmit, onModeSwitch, onBack }) => {
             <ArrowLeft size={20} style={{ color: colors.text }} />
           </Button>
           <h2 className="text-3xl font-bold" style={{ color: colors.text }}>
-            {mode === 'login' ? 'Welcome Back!' : 'Join Sui-ru'}
+            Welcome Back!
           </h2>
           <div></div> {/* Spacer to balance header */}
         </div>
         <p className="text-lg" style={{ color: colors.textSecondary }}>
-          {mode === 'login' ? 'Sign in to your account' : 'Create your account'}
+          Sign in to your account
         </p>
-
+        {error && (
+          <div className="text-red-500 text-sm mb-2">{error}</div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
             <Mail size={20} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: colors.textMuted }} />
             <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
               className="w-full p-3 pl-10 rounded-md border focus:outline-none focus:ring-2"
               style={{
                 backgroundColor: colors.inputBg,
                 borderColor: colors.borderColor,
-                color: colors.text,
+                color: '#000', // Force black text
                 '::placeholder': { color: colors.textMuted }
               }}
             />
@@ -64,46 +89,15 @@ const AuthPage = ({ mode, onSubmit, onModeSwitch, onBack }) => {
               style={{
                 backgroundColor: colors.inputBg,
                 borderColor: colors.borderColor,
-                color: colors.text,
+                color: '#000', // Force black text
                 '::placeholder': { color: colors.textMuted }
               }}
             />
           </div>
-          {mode === 'signup' && (
-            <div className="relative">
-              <Lock size={20} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: colors.textMuted }} />
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className="w-full p-3 pl-10 rounded-md border focus:outline-none focus:ring-2"
-                style={{
-                  backgroundColor: colors.inputBg,
-                  borderColor: colors.borderColor,
-                  color: colors.text,
-                  '::placeholder': { color: colors.textMuted }
-                }}
-              />
-            </div>
-          )}
           <Button type="submit" variant="primary" className="w-full">
-            {mode === 'login' ? (
-              <><LogIn size={20} className="mr-2" /> Sign In</>
-            ) : (
-              <><UserPlus size={20} className="mr-2" /> Sign Up</>
-            )}
+            <LogIn size={20} className="mr-2" /> Sign In
           </Button>
         </form>
-
-        <p className="text-sm" style={{ color: colors.textSecondary }}>
-          {mode === 'login' ? (
-            <>Don't have an account? <button type="button" onClick={() => onModeSwitch('signup')} className="font-medium underline cursor-pointer bg-transparent border-none p-0" style={{ color: colors.primary }}>Sign Up</button></>
-          ) : (
-            <>Already have an account? <button type="button" onClick={() => onModeSwitch('login')} className="font-medium underline cursor-pointer bg-transparent border-none p-0" style={{ color: colors.primary }}>Sign In</button></>
-          )}
-        </p>
       </Card>
     </div>
   );

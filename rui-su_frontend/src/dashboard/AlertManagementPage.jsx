@@ -1,3 +1,9 @@
+import React, { useState } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import { Bell, Download, Filter, RotateCcw, X, Search, AlertTriangle, Flag, CheckCircle, Settings } from 'lucide-react';
+
 const AlertManagementPage = () => {
   const { colors } = useTheme();
   const [selectedAlert, setSelectedAlert] = useState(null);
@@ -387,3 +393,5 @@ const AlertManagementPage = () => {
     </div>
   );
 };
+
+export default AlertManagementPage;
