@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Brain, X, MessageSquare } from 'lucide-react';
+import axiosInstance from '../../axiosInstance';
 
 const ChatbotOverlay = () => {
   const { colors } = useTheme();
@@ -16,7 +17,7 @@ const ChatbotOverlay = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
 
     const userMessage = {
@@ -30,32 +31,24 @@ const ChatbotOverlay = () => {
     setInputMessage('');
     setIsTyping(true);
 
-    // Simulate bot response
-    setTimeout(() => {
+    try {
+      const response = await axiosInstance.post('/api/azure-openai/ask/', { question: inputMessage });
       const botResponse = {
         id: messages.length + 2,
         type: 'bot',
-        content: getQuickBotResponse(inputMessage),
+        content: response.data.answer || 'Sorry, I could not get an answer. Please try again.',
         timestamp: new Date()
       };
       setMessages(prev => [...prev, botResponse]);
+    } catch (error) {
+      setMessages(prev => [...prev, {
+        id: messages.length + 2,
+        type: 'bot',
+        content: 'Sorry, there was an error connecting to the AI service.',
+        timestamp: new Date()
+      }]);
+    } finally {
       setIsTyping(false);
-    }, 1000);
-  };
-
-  const getQuickBotResponse = (message) => {
-    const lowerMessage = message.toLowerCase();
-    
-    if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
-      return 'Hello! I\'m here to help you navigate our monitoring system. What would you like to know?';
-    } else if (lowerMessage.includes('help')) {
-      return 'I can help you with reporting content, understanding our AI detection, or navigating the system. What do you need assistance with?';
-    } else if (lowerMessage.includes('report')) {
-      return 'To report suspicious content, click on the "Report" link in the navigation or tell me more about what you\'d like to report.';
-    } else if (lowerMessage.includes('detection') || lowerMessage.includes('ai')) {
-      return 'Our AI system monitors social media for misinformation and hate speech with 95%+ accuracy. Would you like to know more about how it works?';
-    } else {
-      return 'Thanks for your message! I\'m here to help with any questions about our monitoring system. Feel free to ask me anything!';
     }
   };
 
