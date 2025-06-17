@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, MessageSquare, Camera, Flag, Phone, Menu, X } from 'lucide-react';
+import { Home, MessageSquare, Camera, Flag, Phone } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import Button from '../ui/Button';
 

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
-import { Globe, Shield, Users, AlertTriangle, TrendingUp, Search, Bell, User, Settings, Menu, X, Eye, Filter, Calendar, MapPin, Activity, Database, FileText, UserCheck, Lock, Mail, Github, ChevronDown, ChevronRight, Play, Pause, Download, Zap, BarChart3, Network, Cpu, Brain, Radar, Home, MessageSquare, Target, Clock, CheckCircle, XCircle, AlertCircle, Wifi, WifiOff, ChevronUp, MoreVertical, ExternalLink, Layers, Map, Hash, Flame, Camera, Video, FileImage, Share2, Flag, Heart, ThumbsUp, MessageCircle, RotateCcw, UserPlus, Building, Phone, Globe2, Monitor, Smartphone, Users2, AlertOctagon, TrendingDown, Sun, Moon, Loader2, Save, Trash2, Key, Vote, Send } from 'lucide-react';
+import { Globe, Shield, Activity, Search, Eye, Zap, Globe2, Network, Brain, Radar, Target, UserPlus, Building, Cpu, User, CheckCircle, Camera, Video, Play, Send, Users2, MessageSquare, MessageCircle, Heart, Vote } from 'lucide-react';
 import InteractiveMap from '../InteractiveMapLeaflet';
 import 'leaflet/dist/leaflet.css';
 
 const LandingPage = ({ onAuthClick, onDemoClick }) => {
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
   const [stats] = useState({
     contentMonitored: 2480000,
     accuracyRate: 94,

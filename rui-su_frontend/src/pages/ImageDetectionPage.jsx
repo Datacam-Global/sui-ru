@@ -3,7 +3,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
-import { Upload, Image, Loader2, CheckCircle, XCircle, Camera, FileImage, Radar, Search, Brain } from 'lucide-react';
+import { Loader2, CheckCircle, Camera, FileImage, Radar, Search, Brain } from 'lucide-react';
 
 
 const ImageDetectionPage = () => {

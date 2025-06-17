@@ -1,8 +1,7 @@
 import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { Home, Info, Mail, Phone, MapPin, Clock, Users, Shield, Globe, TrendingUp, BarChart3, Cpu, Brain, Network, Database, FileText, UserCheck, Lock, Github, ExternalLink, Radar } from 'lucide-react';
+import { Users, Shield, BarChart3, Brain, Radar } from 'lucide-react';
 import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 
 const AboutPage = () => {

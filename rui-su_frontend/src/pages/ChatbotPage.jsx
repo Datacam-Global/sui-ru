@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { Send, MessageSquare, X, Loader2, ThumbsUp, ThumbsDown, Copy, Volume2, VolumeX, RefreshCcw, Brain, Clock, Shield } from 'lucide-react';
+import { MessageSquare, Brain, Clock, Shield } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 

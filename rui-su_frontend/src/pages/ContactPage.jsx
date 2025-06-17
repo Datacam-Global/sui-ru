@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Mail, Phone, Globe2, Shield, Building, AlertTriangle, Zap, Github, ExternalLink, Share2, Users, Flag, MessageSquare, Download, FileText, AlertCircle } from 'lucide-react';
 import Card from '../components/ui/Card';

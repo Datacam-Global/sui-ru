@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { FileText, Download, Share2, Filter, BarChart3, TrendingUp, Users, Globe, Clock, AlertTriangle, CheckCircle, XCircle, RefreshCcw, Loader2, Flag } from 'lucide-react';
+import { CheckCircle, Loader2, Flag } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import Badge from '../components/ui/Badge';
-import { ResponsiveContainer, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 
 const ReportPage = () => {
   const { colors } = useTheme();

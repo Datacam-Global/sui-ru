@@ -99,9 +99,9 @@ const AuthPage = ({ mode, onSubmit, onModeSwitch, onBack }) => {
 
         <p className="text-sm" style={{ color: colors.textSecondary }}>
           {mode === 'login' ? (
-            <>Don't have an account? <a href="#" onClick={() => onModeSwitch('signup')} className="font-medium" style={{ color: colors.primary }}>Sign Up</a></>
+            <>Don't have an account? <button type="button" onClick={() => onModeSwitch('signup')} className="font-medium underline cursor-pointer bg-transparent border-none p-0" style={{ color: colors.primary }}>Sign Up</button></>
           ) : (
-            <>Already have an account? <a href="#" onClick={() => onModeSwitch('login')} className="font-medium" style={{ color: colors.primary }}>Sign In</a></>
+            <>Already have an account? <button type="button" onClick={() => onModeSwitch('login')} className="font-medium underline cursor-pointer bg-transparent border-none p-0" style={{ color: colors.primary }}>Sign In</button></>
           )}
         </p>
       </Card>

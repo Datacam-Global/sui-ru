@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import Card from '../components/ui/Card';
-import { Download, Calendar, Clock } from 'lucide-react';
+import { Download, Calendar, Clock, FileText, Settings } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import Button from '../components/ui/Button';
-import { Home, Search, Activity, BarChart3, Globe2, Monitor, Bell, FileText, Settings } from 'lucide-react';
 
 
 
