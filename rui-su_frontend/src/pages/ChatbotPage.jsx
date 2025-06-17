@@ -3,6 +3,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { MessageSquare, Brain, Clock, Shield } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import axiosInstance from '../axiosInstance';
 
 const ChatbotPage = () => {
   const { colors } = useTheme();
@@ -17,7 +18,7 @@ const ChatbotPage = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
 
     const userMessage = {
@@ -31,32 +32,24 @@ const ChatbotPage = () => {
     setInputMessage('');
     setIsTyping(true);
 
-    // Simulate bot response
-    setTimeout(() => {
+    try {
+      const response = await axiosInstance.post('/api/azure-openai/ask/', { question: inputMessage });
       const botResponse = {
         id: messages.length + 2,
         type: 'bot',
-        content: getBotResponse(inputMessage),
+        content: response.data.answer || 'Sorry, I could not get an answer. Please try again.',
         timestamp: new Date()
       };
       setMessages(prev => [...prev, botResponse]);
+    } catch (error) {
+      setMessages(prev => [...prev, {
+        id: messages.length + 2,
+        type: 'bot',
+        content: 'Sorry, there was an error connecting to the AI service.',
+        timestamp: new Date()
+      }]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
-  };
-
-  const getBotResponse = (message) => {
-    const lowerMessage = message.toLowerCase();
-    
-    if (lowerMessage.includes('help') || lowerMessage.includes('what can you do')) {
-      return 'I can help you with information about our monitoring system, explain how to report content, provide system status updates, and answer questions about our AI detection capabilities.';
-    } else if (lowerMessage.includes('report')) {
-      return 'To report suspicious content, you can use our Report page or provide me with the details here. I can guide you through the reporting process.';
-    } else if (lowerMessage.includes('detection') || lowerMessage.includes('ai')) {
-      return 'Our AI detection system uses advanced machine learning to identify misinformation and hate speech with over 95% accuracy. It analyzes text, images, and patterns in real-time across multiple platforms.';
-    } else if (lowerMessage.includes('contact') || lowerMessage.includes('emergency')) {
-      return 'For emergencies, please contact the relevant authorities immediately. For system-related issues, you can reach our support team through the Contact page.';
-    } else {
-      return 'Thank you for your message. I\'m here to help with any questions about our monitoring system, reporting procedures, or general assistance. What would you like to know more about?';
     }
   };
 
