@@ -24,7 +24,7 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
 
   const [selectedTimeframe, setSelectedTimeframe] = useState('24h');
   const [isLive, setIsLive] = useState(true);
-  const [connectionStatus, setConnectionStatus] = useState('connected'); // Default to 'connected' or 'disconnected' as needed
+  const [connectionStatus, setConnectionStatus] = useState('connected'); // Default to 'connected' or 'disconnected'
 
   // Mock real-time data updates
   useEffect(() => {
