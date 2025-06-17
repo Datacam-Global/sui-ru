@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from decouple import config
+from urllib.parse import urlparse
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-_(qg#wizm3_*l)xdoo-@7_j$dk!!t5wo=-a7v0&d^$^ovahag@"
+SECRET_KEY = config('SECRET_KEY', default="django-insecure-_(qg#wizm3_*l)xdoo-@7_j$dk!!t5wo=-a7v0&d^$^ovahag@")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -81,12 +84,41 @@ WSGI_APPLICATION = "sui_ru_main.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# Get database URL from environment variable or use default
+DATABASE_URL = config(
+    'DATABASE_URL',
+    default="postgresql://suiru_user:ly6xjsz926NKIqDw5aYb1lkg3eUIkcrH@dpg-d18jrr8gjchc73979g10-a.oregon-postgres.render.com/suiru"
+)
+
+# Parse the database URL
+url = urlparse(DATABASE_URL)
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": url.path[1:],  # Remove leading slash
+        "USER": url.username,
+        "PASSWORD": url.password,
+        "HOST": url.hostname,
+        "PORT": url.port or 5432,  # Default PostgreSQL port
+        "OPTIONS": {
+            "sslmode": "require",
+            "connect_timeout": 60,
+        },
+        "CONN_MAX_AGE": 600,  # Connection pooling
+        "CONN_HEALTH_CHECKS": True,
     }
 }
+
+# Fallback to SQLite for development if PostgreSQL is not available
+# You can set USE_SQLITE=True in environment variables for local development
+if config('USE_SQLITE', default=False, cast=bool):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
@@ -200,11 +232,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'healthtele522@gmail.com'
-EMAIL_HOST_PASSWORD = 'icqp bkpw yils bwdo'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='healthtele522@gmail.com')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='icqp bkpw yils bwdo')
 
 # Password Reset Settings
 PASSWORD_RESET_TIMEOUT = 3600  # 1 hour in seconds
 
 # Frontend URLs (for password reset and email verification)
-FRONTEND_URL = 'http://localhost:3000'  # Update with your frontend URL
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:3000')
