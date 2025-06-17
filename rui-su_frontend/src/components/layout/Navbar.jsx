@@ -117,9 +117,9 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
             <ThemeToggle />
             {isLoggedIn && user ? (
               <div className="flex items-center space-x-2">
-                <div className="px-3 py-1 rounded bg-gray-100 text-gray-800 font-medium">
-                  {user.name}
-                </div>
+                <span className="font-medium" style={{ color: '#fff' }}>
+                  {user.username || user.name}
+                </span>
               </div>
             ) : null}
             {isLoggedIn ? (

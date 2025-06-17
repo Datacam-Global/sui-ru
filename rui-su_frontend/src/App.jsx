@@ -78,12 +78,25 @@ function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
     }, 500);
   };
 
-  const handleAuthSubmit = () => {
-    setUser({
-      name: authMode === 'login' ? 'Alex Johnson' : 'New User',
-      role: 'Senior Analyst',
-      email: authMode === 'login' ? 'alex.johnson@fonsee.ai' : 'newuser@fonsee.ai'
-    });
+  const handleAuthSubmit = (data) => {
+    // If user object exists in response, use username, else fallback
+    if (data && data.user) {
+      setUser({
+        username: data.user.username,
+        email: data.user.email,
+        id: data.user.id,
+        first_name: data.user.first_name,
+        last_name: data.user.last_name
+      });
+    } else {
+      setUser({
+        username: authMode === 'login' ? 'User' : 'New User',
+        email: '',
+        id: '',
+        first_name: '',
+        last_name: ''
+      });
+    }
   };
 
   return (
