@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import (
     Alert, Report, ContentAnalysis, GeographicData,
-    PlatformAnalytics, ChatMessage, UserSettings
+    PlatformAnalytics, ChatMessage, UserSettings, FacebookPost
 )
 
 class UserSerializer(serializers.ModelSerializer):
@@ -71,4 +71,17 @@ class UserSettingsSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = UserSettings
-        fields = '__all__' 
+        fields = '__all__'
+
+class FacebookPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FacebookPost
+        fields = '__all__'
+        
+class FacebookAPIResponseSerializer(serializers.Serializer):
+    """
+    Serializer for Facebook API response format matching Data365 structure
+    """
+    data = FacebookPostSerializer()
+    error = serializers.CharField(allow_null=True, default=None)
+    status = serializers.CharField(default="ok")

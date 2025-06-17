@@ -17,6 +17,7 @@ router.register(r'geographic-data', views.GeographicDataViewSet)
 router.register(r'platform-analytics', views.PlatformAnalyticsViewSet)
 router.register(r'chat-messages', views.ChatMessageViewSet)
 router.register(r'user-settings', views.UserSettingsViewSet)
+router.register(r'facebook-posts', views.FacebookPostViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -33,4 +34,10 @@ urlpatterns = [
     # Email Verification URLs
     path('auth/verify-email/', VerifyEmailView.as_view(), name='verify_email'),
     path('auth/resend-verification/', resend_verification_email, name='resend_verification'),
-] 
+    
+    # Facebook API Endpoints (Data365 integration)
+    path('facebook/post/', views.facebook_api_data, name='facebook_api_data'),
+    path('facebook/posts/', views.facebook_api_posts_list, name='facebook_api_posts_list'),
+    path('facebook/saved-posts/', views.facebook_saved_posts, name='facebook_saved_posts'),
+    path('facebook/clear-saved-posts/', views.facebook_clear_saved_posts, name='facebook_clear_saved_posts'),
+]

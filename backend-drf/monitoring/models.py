@@ -103,3 +103,59 @@ class UserSettings(models.Model):
     
     def __str__(self):
         return f"{self.user.username}'s Settings"
+
+class FacebookPost(models.Model):
+    """
+    Model to store Facebook post data from Data365 API integration
+    """
+    post_id = models.CharField(max_length=50, unique=True)
+    created_time = models.CharField(max_length=50)
+    timestamp = models.BigIntegerField()
+    post_type = models.CharField(max_length=50)
+    text = models.TextField(blank=True)
+    text_lang = models.CharField(max_length=10, blank=True)
+    text_tagged_users = models.JSONField(default=list)
+    text_tags = models.JSONField(default=list)
+    attached_link = models.URLField(blank=True)
+    attached_link_description = models.TextField(blank=True)
+    attached_image_url = models.URLField(blank=True)
+    attached_image_url_s3 = models.URLField(blank=True)
+    attached_image_content = models.TextField(blank=True)
+    attached_medias_id = models.JSONField(default=list)
+    attached_medias_preview_url = models.JSONField(default=list)
+    attached_medias_preview_url_s3 = models.JSONField(default=list)
+    attached_medias_preview_content = models.JSONField(default=list)
+    attached_post_id = models.CharField(max_length=50, blank=True)
+    attached_video_preview_url = models.URLField(blank=True)
+    attached_video_preview_url_s3 = models.URLField(blank=True)
+    attached_video_url = models.URLField(blank=True)
+    post_screenshot = models.URLField(blank=True)
+    reactions_like_count = models.IntegerField(default=0)
+    reactions_love_count = models.IntegerField(default=0)
+    reactions_haha_count = models.IntegerField(default=0)
+    reactions_wow_count = models.IntegerField(default=0)
+    reactions_sad_count = models.IntegerField(default=0)
+    reactions_angry_count = models.IntegerField(default=0)
+    reactions_support_count = models.IntegerField(default=0)
+    reactions_total_count = models.IntegerField(default=0)
+    comments_count = models.IntegerField(default=0)
+    shares_count = models.IntegerField(default=0)
+    video_view_count = models.IntegerField(default=0)
+    video_duration = models.IntegerField(default=0)
+    overlay_text = models.TextField(blank=True)
+    fact_checks = models.JSONField(default=list)
+    owner_id = models.CharField(max_length=50)
+    owner_username = models.CharField(max_length=100)
+    owner_full_name = models.CharField(max_length=200)
+    group_id = models.CharField(max_length=50, blank=True)
+    recommends = models.BooleanField(default=False)
+    tagged_location_id = models.CharField(max_length=50, blank=True)
+    post_location_id = models.CharField(max_length=50, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-timestamp']
+    
+    def __str__(self):
+        return f"{self.owner_username} - {self.post_id}"

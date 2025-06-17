@@ -11,6 +11,9 @@ media/
 !media/.gitkeep
 
 
+
+
+
 # Environment variables
 .env
 .env.local
