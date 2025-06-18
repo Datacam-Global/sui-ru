@@ -29,6 +29,28 @@ const ContactPage = () => {
         { type: "Secure Portal", value: "https://secure.cirt.cm", icon: Shield }
       ],
       color: colors.danger
+    },
+    {
+      organization: "ART",
+      fullName: "Agence de Régulation des Télécommunications",
+      description: "Telecommunications regulatory authority",
+      contacts: [
+        { type: "Regulatory Hotline", value: "+237 222 555 789", icon: Phone },
+        { type: "Complaints Email", value: "complaints@art.cm", icon: Mail },
+        { type: "Online Portal", value: "https://www.art.cm", icon: Globe2 }
+      ],
+      color: colors.secondary
+    },
+    {
+      organization: "MINIPOSTEL",
+      fullName: "Ministère des Postes et Télécommunications",
+      description: "Ministry of Posts and Telecommunications",
+      contacts: [
+        { type: "Ministry Hotline", value: "+237 222 333 111", icon: Phone },
+        { type: "Official Email", value: "contact@minipostel.gov.cm", icon: Mail },
+        { type: "Government Portal", value: "https://www.minipostel.gov.cm", icon: Building }
+      ],
+      color: colors.success
     }
   ];
 

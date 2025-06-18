@@ -13,6 +13,11 @@ import ChatbotPage from './pages/ChatbotPage';
 import ImageDetectionPage from './pages/ImageDetectionPage';
 import ReportPage from './pages/ReportPage';
 import ContactPage from './pages/ContactPage';
+import SUILearnPage from './pages/SUILearnPage';
+import MarketingPage from './pages/MarketingPage';
+import BlogPage from './pages/BlogPage';
+import NewsPage from './pages/NewsPage';
+import HelpCenterPage from './pages/HelpCenterPage';
 import ChatbotOverlay from './components/common/ChatbotOverlay'; 
 import PublicRoute from './PublicRoutes';
 import PrivateRoutes from './PrivateRoutes';
@@ -141,6 +146,13 @@ function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
         <Route path="/image-detection" element={<ImageDetectionPage />} />
         <Route path="/chatbot" element={<ChatbotPage />} />
         <Route path="/report" element={<ReportPage />} />
+        <Route path="/sui-learn" element={<SUILearnPage />} />
+        <Route path="/sui-learn/courses" element={<SUILearnPage />} />
+        <Route path="/sui-learn/certifications" element={<SUILearnPage />} />
+        <Route path="/marketing" element={<MarketingPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/news" element={<NewsPage />} />
+        <Route path="/help" element={<HelpCenterPage />} />
         {/* Private routes */}
         <Route path="/alert-management" element={<PrivateRoutes><AlertManagementPage /></PrivateRoutes>} />
         <Route path="/dashboard" element={<PrivateRoutes><ExecutiveDashboard user={user} onLogout={handleLogout} onAnalystClick={handleAnalystClick} /></PrivateRoutes>} />

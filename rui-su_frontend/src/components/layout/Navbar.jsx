@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { Shield, Menu, X, Home, MessageSquare, Camera, Flag, Phone } from 'lucide-react'; // Removed unused 'User'
+import React, { useContext, useState } from 'react';
+import { Shield, Menu, X, Home, MessageSquare, Camera, Flag, Phone, ChevronDown, Brain, BarChart3, GraduationCap, BookOpen, FileText, HelpCircle, Code, Users, Building2, User, Globe } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import Button from '../ui/Button';
 import ThemeToggle from '../common/ThemeToggle';
@@ -8,6 +8,108 @@ import { AuthContext } from '../../AuthProvider';
 const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMenuOpen, setIsMobileMenuOpen, user }) => {
   const { colors } = useTheme();
   const { isLoggedIn } = useContext(AuthContext);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+
+  const handleDropdownToggle = (dropdown) => {
+    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+  };
+
+  const handleNavigation = (path) => {
+    navigateWithLoading(path, 500);
+    setActiveDropdown(null);
+  };
+
+  const DropdownMenu = ({ title, items, isActive, onToggle, icon: Icon }) => (
+    <div className="relative">
+      <Button 
+        variant="ghost" 
+        size="sm"
+        onClick={onToggle}
+        className="text-sm font-medium hover:scale-105 transition-transform flex items-center"
+      >
+        {Icon && <Icon className="w-4 h-4 mr-1" />}
+        {title}
+        <ChevronDown className={`w-4 h-4 ml-1 transition-transform ${isActive ? 'rotate-180' : ''}`} />
+      </Button>
+      
+      {isActive && (
+        <div 
+          className="absolute top-full left-0 mt-2 w-64 rounded-lg shadow-lg border z-50"
+          style={{ 
+            backgroundColor: colors.bgCard + 'FF',
+            borderColor: colors.border 
+          }}
+        >
+          <div className="py-2">
+            {items.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => handleNavigation(item.path)}
+                className="w-full px-4 py-3 text-left hover:bg-opacity-50 transition-colors flex items-center"
+                style={{ 
+                  color: colors.text,
+                  ':hover': { backgroundColor: colors.bgHover }
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = colors.bgHover}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+              >
+                <item.icon className="w-5 h-5 mr-3" style={{ color: colors.primary }} />
+                <div>
+                  <div className="font-medium">{item.title}</div>
+                  <div className="text-xs" style={{ color: colors.textMuted }}>{item.description}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  const servicesItems = [
+    {
+      title: "Image Detection AI",
+      description: "Advanced AI-powered image analysis",
+      path: "/image-detection",
+      icon: Camera
+    },
+    {
+      title: "Chatbot",
+      description: "Intelligent conversation assistant",
+      path: "/chatbot",
+      icon: MessageSquare
+    },
+    {
+      title: "Content Monitoring",
+      description: "Real-time content surveillance",
+      path: "/dashboard",
+      icon: BarChart3
+    }
+  ];
+
+  const solutionsItems = [
+    {
+      title: "For Businesses",
+      description: "Enterprise solutions and consulting",
+      path: "/marketing",
+      icon: Building2
+    }
+  ];
+
+  const resourcesItems = [
+    {
+      title: "Blog & News",
+      description: "Latest updates and insights",
+      path: "/blog",
+      icon: FileText
+    },
+    {
+      title: "Help Center",
+      description: "Support and documentation",
+      path: "/help",
+      icon: HelpCircle
+    }
+  ];
 
   return (
     <nav 
@@ -21,75 +123,77 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-4">
             <div 
-              className="w-10 h-10 rounded-lg flex items-center justify-center"
+              className="w-10 h-10 rounded-lg flex items-center justify-center cursor-pointer"
               style={{ background: colors.gradientPrimary }}
+              onClick={() => handleNavigation("/")}
             >
               <Shield className="w-6 h-6 text-white" />
             </div>
-            <div>
+            <div className="cursor-pointer" onClick={() => handleNavigation("/")}>
               <h1 className="text-xl font-bold" style={{ color: colors.text }}>Sui-Ru</h1>
               <p className="text-xs" style={{ color: colors.textMuted }}>MHSMS</p>
             </div>
           </div>
 
           {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden lg:flex items-center space-x-6">
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={() => navigateWithLoading("/", 500)}
+              onClick={() => handleNavigation("/")}
               className="text-sm font-medium hover:scale-105 transition-transform"
             >
               <Home className="w-4 h-4 mr-1" />
               Home
             </Button>
+
+            <DropdownMenu
+              title="Services"
+              items={servicesItems}
+              isActive={activeDropdown === 'services'}
+              onToggle={() => handleDropdownToggle('services')}
+              icon={Brain}
+            />
+
+            <DropdownMenu
+              title="Solutions"
+              items={solutionsItems}
+              isActive={activeDropdown === 'solutions'}
+              onToggle={() => handleDropdownToggle('solutions')}
+              icon={Building2}
+            />
+
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={() => navigateWithLoading("about", 500)}
+              onClick={() => handleNavigation("/sui-learn")}
+              className="text-sm font-medium hover:scale-105 transition-transform"
+            >
+              <GraduationCap className="w-4 h-4 mr-1" />
+              Learn
+            </Button>
+
+            <DropdownMenu
+              title="Resources"
+              items={resourcesItems}
+              isActive={activeDropdown === 'resources'}
+              onToggle={() => handleDropdownToggle('resources')}
+              icon={FileText}
+            />
+
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => handleNavigation("/about")}
               className="text-sm font-medium hover:scale-105 transition-transform"
             >
               About
             </Button>
+
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={() => navigateWithLoading("faq", 500)}
-              className="text-sm font-medium hover:scale-105 transition-transform"
-            >
-              FAQ
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => navigateWithLoading("chatbot", 500)}
-              className="text-sm font-medium hover:scale-105 transition-transform"
-            >
-              <MessageSquare className="w-4 h-4 mr-1" />
-              Chatbot
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => navigateWithLoading("image-detection", 500)}
-              className="text-sm font-medium hover:scale-105 transition-transform"
-            >
-              <Camera className="w-4 h-4 mr-1" />
-              Image Detection AI
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => navigateWithLoading("report", 500)}
-              className="text-sm font-medium hover:scale-105 transition-transform"
-            >
-              <Flag className="w-4 h-4 mr-1" />
-              Report
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => navigateWithLoading("contact", 500)}
+              onClick={() => handleNavigation("/contact")}
               className="text-sm font-medium hover:scale-105 transition-transform"
             >
               <Phone className="w-4 h-4 mr-1" />
@@ -98,7 +202,7 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <Button
               variant="ghost"
               size="sm"
@@ -117,7 +221,7 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
             <ThemeToggle />
             {isLoggedIn && user ? (
               <div className="flex items-center space-x-2">
-                <span className="font-medium" style={{ color: '#fff' }}>
+                <span className="font-medium" style={{ color: colors.text }}>
                   {user.username || user.name}
                 </span>
               </div>
@@ -134,6 +238,14 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
           </div>
         </div>
       </div>
+
+      {/* Click outside to close dropdowns */}
+      {activeDropdown && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setActiveDropdown(null)}
+        />
+      )}
     </nav>
   );
 };
