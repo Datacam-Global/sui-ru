@@ -8,15 +8,12 @@ import {
   MessageCircle, 
   Book, 
   Video, 
-  Download, 
   Search,
   HelpCircle,
   FileText,
   Users,
-  Settings,
   Shield,
   Zap,
-  Globe,
   Clock
 } from 'lucide-react';
 import Card from '../components/ui/Card';
