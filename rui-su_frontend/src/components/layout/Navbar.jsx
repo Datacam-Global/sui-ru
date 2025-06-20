@@ -37,7 +37,8 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
           className="absolute top-full left-0 mt-2 w-64 rounded-lg shadow-lg border z-50"
           style={{ 
             backgroundColor: colors.bgCard,
-            borderColor: colors.border 
+            borderColor: colors.border,
+            opacity: 1 
           }}
         >
           <div className="py-2">
@@ -45,13 +46,13 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
               <button
                 key={index}
                 onClick={() => handleNavigation(item.path)}
-                className="w-full px-4 py-3 text-left hover:bg-opacity-50 transition-colors flex items-center"
+                className="w-full px-4 py-3 text-left transition-colors flex items-center"
                 style={{ 
                   color: colors.text,
-                  ':hover': { backgroundColor: colors.bgHover }
+                  backgroundColor: colors.bgCard,
                 }}
                 onMouseEnter={(e) => e.target.style.backgroundColor = colors.bgHover}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = colors.bgCard}
               >
                 <item.icon className="w-5 h-5 mr-3" style={{ color: colors.primary }} />
                 <div>
@@ -113,7 +114,7 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
 
   return (
     <nav 
-      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-all duration-300"
+      className="fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300"
       style={{ 
         backgroundColor: colors.navBg,
         borderColor: colors.navBorder 

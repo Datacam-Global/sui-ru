@@ -25,8 +25,8 @@ const ThemeProvider = ({ children }) => {
       bg: '#000000',
       bgSecondary: '#111111',
       bgTertiary: '#1a1a1a',
-      bgCard: 'rgba(255, 255, 255, 0.05)',
-      bgCardHover: 'rgba(255, 255, 255, 0.08)',
+      bgCard: '#282828',
+      bgCardHover: '#383838',
       
       // Borders
       border: 'rgba(255, 255, 255, 0.1)',
@@ -44,7 +44,7 @@ const ThemeProvider = ({ children }) => {
       gradientSuccess: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
       
       // Navigation
-      navBg: 'rgba(0, 0, 0, 0.8)',
+      navBg: '#000000',
       navBorder: 'rgba(255, 255, 255, 0.1)',
     } : {
       // Light theme
@@ -59,8 +59,8 @@ const ThemeProvider = ({ children }) => {
       bg: '#ffffff',
       bgSecondary: '#fafafa',
       bgTertiary: '#f5f5f5',
-      bgCard: 'rgba(255, 255, 255, 0.8)',
-      bgCardHover: 'rgba(255, 255, 255, 0.95)',
+           bgCard: '#ffffff',
+      bgCardHover: '#f0f0f0',
       
       // Borders
       border: 'rgba(0, 0, 0, 0.1)',
@@ -78,7 +78,7 @@ const ThemeProvider = ({ children }) => {
       gradientSuccess: 'linear-gradient(135deg, #059669 0%, #34d399 100%)',
       
       // Navigation
-      navBg: 'rgba(255, 255, 255, 0.8)',
+      navBg: '#ffffff',
       navBorder: 'rgba(0, 0, 0, 0.1)',
     }
   };
