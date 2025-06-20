@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Shield, Menu, X, Home, MessageSquare, Camera, Phone, ChevronDown, Brain, BarChart3, GraduationCap, FileText, HelpCircle, Building2 } from 'lucide-react';
+import { Shield, Menu, X, Home, MessageSquare, Camera, Phone, ChevronDown, Brain, GraduationCap, FileText, HelpCircle, Building2 } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import Button from '../ui/Button';
 import ThemeToggle from '../common/ThemeToggle';
