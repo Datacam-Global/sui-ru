@@ -36,7 +36,7 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
         <div 
           className="absolute top-full left-0 mt-2 w-64 rounded-lg shadow-lg border z-50"
           style={{ 
-            backgroundColor: colors.bgCard + 'FF',
+            backgroundColor: colors.bgCard,
             borderColor: colors.border 
           }}
         >
@@ -80,10 +80,10 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
       icon: MessageSquare
     },
     {
-      title: "Content Monitoring",
-      description: "Real-time content surveillance",
-      path: "/dashboard",
-      icon: BarChart3
+      title: "Report Page",
+      description: "Submit reports and feedback",
+      path: "/report",
+      icon: FileText
     }
   ];
 

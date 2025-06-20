@@ -560,12 +560,7 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
                   ))}
                 </div>
                 
-                <div className="mt-4 pt-4 border-t" style={{ borderColor: colors.border }}>
-                  <Button variant="danger" size="sm" className="w-full">
-                    <AlertTriangle className="w-4 h-4 mr-2" />
-                    View Emergency Dashboard
-                  </Button>
-                </div>
+                {/* Removed View Emergency Dashboard button */}
               </Card>
             </div>
 
