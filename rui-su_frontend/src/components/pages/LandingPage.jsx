@@ -5,6 +5,7 @@ import Card from '../ui/Card';
 import InteractiveMap from '../../InteractiveMapLeaflet';
 import { Globe, Shield, Activity, Search, Eye, Zap, Globe2, Network, Brain, Radar, Target, UserPlus, Building, Cpu, User, CheckCircle, Camera, Video, Play, Send, Users2, MessageSquare, MessageCircle, Heart, Vote } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
+import { useNavigate } from 'react-router-dom';
 
 const LandingPage = ({ onAuthClick, onDemoClick }) => {
   const { colors } = useTheme();
@@ -16,6 +17,8 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
     countriesProtected: 15,
     responseTime: 2.3
   });
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   // Dynamic Text Animation Component
   const DynamicWelcomeText = () => {
@@ -136,6 +139,13 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
     </div>
   );
 
+  const handleSearch = () => {
+    // Redirect to chatbot with the search query
+    if (searchTerm.trim()) {
+      navigate(`/chatbot?query=${encodeURIComponent(searchTerm)}`);
+    }
+  };
+
   return (
     <div 
       className="pt-16 min-h-screen relative overflow-hidden transition-all duration-500"
@@ -181,25 +191,34 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
 
               {/* Search Bar */}
               <div className="max-w-md">
-                <div 
-                  className="flex items-center px-6 py-4 rounded-2xl border backdrop-blur-sm transition-all duration-300 hover:scale-105 focus-within:scale-105"
-                  style={{ 
-                    backgroundColor: colors.bgCard,
-                    borderColor: colors.border,
-                    boxShadow: `0 0 40px ${colors.primary}10`
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSearch();
                   }}
                 >
-                  <Search className="w-5 h-5 mr-4" style={{ color: colors.textMuted }} />
-                  <input
-                    type="text"
-                    placeholder="Search threats, content, or regions..."
-                    className="flex-1 bg-transparent outline-none text-lg"
-                    style={{ color: colors.text }}
-                  />
-                  <Button variant="primary" size="sm" className="ml-2">
-                    <Search size={16} />
-                  </Button>
-                </div>
+                  <div 
+                    className="flex items-center px-6 py-4 rounded-2xl border backdrop-blur-sm transition-all duration-300 hover:scale-105 focus-within:scale-105"
+                    style={{ 
+                      backgroundColor: colors.bgCard,
+                      borderColor: colors.border,
+                      boxShadow: `0 0 40px ${colors.primary}10`
+                    }}
+                  >
+                    <Search className="w-5 h-5 mr-4" style={{ color: colors.textMuted }} />
+                    <input
+                      type="text"
+                      placeholder="Search threats, content, or regions..."
+                      className="flex-1 bg-transparent outline-none text-lg"
+                      style={{ color: colors.text }}
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <Button type="submit" variant="primary" size="sm" className="ml-2">
+                      <Search size={16} />
+                    </Button>
+                  </div>
+                </form>
               </div>
             </div>
 
