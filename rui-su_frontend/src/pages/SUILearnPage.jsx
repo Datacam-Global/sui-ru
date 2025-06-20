@@ -7,26 +7,15 @@ import {
   GraduationCap, 
   BookOpen, 
   Play, 
-  Clock, 
   Users, 
   Star, 
   Award, 
   CheckCircle, 
   Search,
-  Filter,
-  TrendingUp,
-  Brain,
-  Shield,
-  BarChart3,
   Code,
-  Database,
-  Globe,
   Target,
-  Zap,
   User,
-  Calendar,
-  Download,
-  ExternalLink
+  Calendar
 } from 'lucide-react';
 
 const SUILearnPage = () => {
@@ -37,11 +26,11 @@ const SUILearnPage = () => {
 
   const categories = [
     { id: 'all', name: 'All Courses', icon: BookOpen },
-    { id: 'ai-ml', name: 'AI & Machine Learning', icon: Brain },
-    { id: 'security', name: 'Digital Security', icon: Shield },
-    { id: 'analytics', name: 'Data Analytics', icon: BarChart3 },
-    { id: 'development', name: 'Development', icon: Code },
-    { id: 'business', name: 'Business Intelligence', icon: TrendingUp }
+    { id: 'ai-ml', name: 'AI & Machine Learning', icon: GraduationCap },
+    { id: 'security', name: 'Digital Security', icon: User },
+    { id: 'analytics', name: 'Data Analytics', icon: Code },
+    { id: 'development', name: 'Development', icon: Target },
+    { id: 'business', name: 'Business Intelligence', icon: Play }
   ];
 
   const courses = [
@@ -375,7 +364,7 @@ const SUILearnPage = () => {
                     
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center">
-                        <Clock className="w-4 h-4 mr-1" style={{ color: colors.textMuted }} />
+                        <Calendar className="w-4 h-4 mr-1" style={{ color: colors.textMuted }} />
                         <span className="text-sm" style={{ color: colors.textMuted }}>
                           {course.duration}
                         </span>
@@ -477,7 +466,7 @@ const SUILearnPage = () => {
                     
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center">
-                        <Clock className="w-4 h-4 mr-1" style={{ color: colors.textMuted }} />
+                        <Calendar className="w-4 h-4 mr-1" style={{ color: colors.textMuted }} />
                         <span className="text-sm" style={{ color: colors.textMuted }}>
                           {course.duration}
                         </span>

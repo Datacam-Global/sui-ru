@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { Calendar, User, ArrowRight, TrendingUp, AlertTriangle, Shield, Globe, MessageSquare, Camera, BarChart3, Clock, Eye } from 'lucide-react';
+import { Calendar, User, ArrowRight, AlertTriangle, Shield, Globe, MessageSquare, Camera, BarChart3, Eye } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 

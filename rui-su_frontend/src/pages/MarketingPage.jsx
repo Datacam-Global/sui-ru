@@ -4,7 +4,6 @@ import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 import { 
-  Briefcase, 
   TrendingUp, 
   Users, 
   Target, 
@@ -15,39 +14,18 @@ import {
   ArrowRight,
   Building,
   Lightbulb,
-  Zap,
-  Globe,
-  MessageSquare,
-  Phone,
-  Mail,
-  Github,
-  Chrome,
   CreditCard,
   Calendar,
-  Clock,
   Award,
   DollarSign,
-  PieChart,
-  TrendingDown,
-  AlertTriangle,
-  FileText,
-  Settings,
   UserPlus,
-  Lock,
-  Eye,
-  Download,
-  Smartphone,
-  Laptop,
   Headphones,
-  BookOpen,
   Video,
-  Coffee,
   Rocket,
   Brain,
-  Database,
   Network,
-  Cpu,
-  Activity
+  Activity,
+  Phone
 } from 'lucide-react';
 
 const MarketingPage = () => {
