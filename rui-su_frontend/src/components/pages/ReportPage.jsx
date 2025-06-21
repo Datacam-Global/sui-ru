@@ -3,41 +3,68 @@ import { useTheme } from '../contexts/ThemeContext';
 import { CheckCircle, Loader2, Flag } from 'lucide-react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
+import axiosInstance from '../../axiosInstance';
 
 const ReportPage = () => {
   const { colors } = useTheme();
   const [reportData, setReportData] = useState({
-    type: '',
+    reporter_name: '',
+    reporter_email: '',
+    content_type: '',
     platform: '',
     url: '',
+    urgency_level: '',
     description: '',
-    urgency: 'medium',
-    contact: ''
+    evidence: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate submission
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-      setReportData({
-        type: '',
-        platform: '',
-        url: '',
-        description: '',
-        urgency: 'medium',
-        contact: ''
+    try {
+      const formData = new FormData();
+      formData.append('reporter_name', reportData.reporter_name);
+      formData.append('reporter_email', reportData.reporter_email);
+      formData.append('content_type', reportData.content_type);
+      formData.append('platform', reportData.platform);
+      formData.append('url', reportData.url);
+      formData.append('urgency_level', reportData.urgency_level);
+      formData.append('description', reportData.description);
+      if (reportData.evidence) {
+        formData.append('evidence', reportData.evidence);
+      }
+      const response = await axiosInstance.post('/api/reports/suspecious/', formData, {
+        skipAuth: true,
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
-    }, 2000);
+      if (response.status === 201) {
+        setSubmitted(true);
+        setReportData({
+          reporter_name: '',
+          reporter_email: '',
+          content_type: '',
+          platform: '',
+          url: '',
+          urgency_level: '',
+          description: '',
+          evidence: null
+        });
+      } else {
+        console.error('Failed to submit report:', response.data);
+      }
+    } catch (error) {
+      console.error('Error submitting report:', error);
+    }
+    setIsSubmitting(false);
   };
 
   const handleInputChange = (field, value) => {
     setReportData(prev => ({ ...prev, [field]: value }));
+  };
+  const handleFileChange = (e) => {
+    setReportData(prev => ({ ...prev, evidence: e.target.files[0] }));
   };
 
   if (submitted) {
@@ -85,18 +112,40 @@ const ReportPage = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
+                Your Name *
+              </label>
+              <input
+                type="text"
+                value={reportData.reporter_name}
+                onChange={e => handleInputChange('reporter_name', e.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{ backgroundColor: colors.bgSecondary, borderColor: colors.border, color: colors.text }}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
+                Your Email *
+              </label>
+              <input
+                type="email"
+                value={reportData.reporter_email}
+                onChange={e => handleInputChange('reporter_email', e.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{ backgroundColor: colors.bgSecondary, borderColor: colors.border, color: colors.text }}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
                 Content Type *
               </label>
               <select
-                value={reportData.type}
-                onChange={(e) => handleInputChange('type', e.target.value)}
+                value={reportData.content_type}
+                onChange={e => handleInputChange('content_type', e.target.value)}
                 required
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                style={{
-                  backgroundColor: colors.bgSecondary,
-                  borderColor: colors.border,
-                  color: colors.text
-                }}
+                style={{ backgroundColor: colors.bgSecondary, borderColor: colors.border, color: colors.text }}
               >
                 <option value="">Select content type</option>
                 <option value="misinformation">Misinformation</option>
@@ -107,21 +156,16 @@ const ReportPage = () => {
                 <option value="other">Other</option>
               </select>
             </div>
-
             <div>
               <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
                 Platform *
               </label>
               <select
                 value={reportData.platform}
-                onChange={(e) => handleInputChange('platform', e.target.value)}
+                onChange={e => handleInputChange('platform', e.target.value)}
                 required
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                style={{
-                  backgroundColor: colors.bgSecondary,
-                  borderColor: colors.border,
-                  color: colors.text
-                }}
+                style={{ backgroundColor: colors.bgSecondary, borderColor: colors.border, color: colors.text }}
               >
                 <option value="">Select platform</option>
                 <option value="facebook">Facebook</option>
@@ -133,7 +177,6 @@ const ReportPage = () => {
                 <option value="other">Other</option>
               </select>
             </div>
-
             <div>
               <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
                 Content URL or Link
@@ -141,77 +184,56 @@ const ReportPage = () => {
               <input
                 type="url"
                 value={reportData.url}
-                onChange={(e) => handleInputChange('url', e.target.value)}
+                onChange={e => handleInputChange('url', e.target.value)}
                 placeholder="https://example.com/post"
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                style={{
-                  backgroundColor: colors.bgSecondary,
-                  borderColor: colors.border,
-                  color: colors.text
-                }}
+                style={{ backgroundColor: colors.bgSecondary, borderColor: colors.border, color: colors.text }}
               />
             </div>
-
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
+                Urgency Level *
+              </label>
+              <select
+                value={reportData.urgency_level}
+                onChange={e => handleInputChange('urgency_level', e.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{ backgroundColor: colors.bgSecondary, borderColor: colors.border, color: colors.text }}
+              >
+                <option value="">Select urgency</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="critical">Critical</option>
+              </select>
+            </div>
             <div>
               <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
                 Description *
               </label>
               <textarea
                 value={reportData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
+                onChange={e => handleInputChange('description', e.target.value)}
                 required
                 rows={4}
                 placeholder="Please provide details about the suspicious content..."
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                style={{
-                  backgroundColor: colors.bgSecondary,
-                  borderColor: colors.border,
-                  color: colors.text
-                }}
+                style={{ backgroundColor: colors.bgSecondary, borderColor: colors.border, color: colors.text }}
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
-                Urgency Level
-              </label>
-              <div className="flex space-x-4">
-                {['low', 'medium', 'high', 'critical'].map((level) => (
-                  <label key={level} className="flex items-center">
-                    <input
-                      type="radio"
-                      value={level}
-                      checked={reportData.urgency === level}
-                      onChange={(e) => handleInputChange('urgency', e.target.value)}
-                      className="mr-2"
-                    />
-                    <span className="capitalize" style={{ color: colors.text }}>{level}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: colors.text }}>
-                Contact Information (Optional)
+                Evidence (Optional)
               </label>
               <input
-                type="email"
-                value={reportData.contact}
-                onChange={(e) => handleInputChange('contact', e.target.value)}
-                placeholder="your.email@example.com"
+                type="file"
+                accept="image/*,video/*,application/pdf"
+                onChange={handleFileChange}
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                style={{
-                  backgroundColor: colors.bgSecondary,
-                  borderColor: colors.border,
-                  color: colors.text
-                }}
+                style={{ backgroundColor: colors.bgSecondary, borderColor: colors.border, color: colors.text }}
               />
-              <p className="text-sm mt-1" style={{ color: colors.textMuted }}>
-                Optional: Provide your email if you want updates on this report
-              </p>
             </div>
-
             <Button
               type="submit"
               variant="primary"
