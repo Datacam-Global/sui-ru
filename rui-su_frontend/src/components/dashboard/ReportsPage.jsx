@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '../ui/Card';
 import { Download, Calendar, Clock, FileText, Settings, Eye, CheckCircle, AlertTriangle, Trash2, MessageSquare, User, MapPin, ExternalLink } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import Button from '../ui/Button';
 import Badge from '../ui/Badge';
+import axiosInstance from '../../axiosInstance';
 
 
 
@@ -14,7 +15,26 @@ const ReportsPage = () => {
   const [reportFormat, setReportFormat] = useState('pdf');
   const [activeTab, setActiveTab] = useState('analytics');
   const [selectedUserReport, setSelectedUserReport] = useState(null);
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
+  // get reports from api
+  const getReportsFromApi = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      // Remove skipAuth: true to require Authorization header
+      const response = await axiosInstance.get('/api/reports/suspecious/list/');
+      setReports(response.data);
+      setLoading(false);
+    } catch (error) {
+      setError('Error fetching reports');
+      setLoading(false);
+      console.error('Error fetching reports:', error);
+    }
+  }
+  
   // Mock user submitted reports data
   const userReports = [
     {
@@ -136,7 +156,7 @@ const ReportsPage = () => {
             <div>
               <p className="text-sm font-medium" style={{ color: colors.warning }}>Pending</p>
               <p className="text-2xl font-bold" style={{ color: colors.text }}>
-                {userReports.filter(r => r.status === 'pending').length}
+                {reports.filter(r => r.status === 'pending').length}
               </p>
             </div>
             <AlertTriangle className="w-8 h-8" style={{ color: colors.warning }} />
@@ -147,7 +167,7 @@ const ReportsPage = () => {
             <div>
               <p className="text-sm font-medium" style={{ color: colors.primary }}>Investigating</p>
               <p className="text-2xl font-bold" style={{ color: colors.text }}>
-                {userReports.filter(r => r.status === 'investigating').length}
+                {reports.filter(r => r.status === 'investigating').length}
               </p>
             </div>
             <Eye className="w-8 h-8" style={{ color: colors.primary }} />
@@ -158,7 +178,7 @@ const ReportsPage = () => {
             <div>
               <p className="text-sm font-medium" style={{ color: colors.success }}>Resolved</p>
               <p className="text-2xl font-bold" style={{ color: colors.text }}>
-                {userReports.filter(r => r.status === 'resolved').length}
+                {reports.filter(r => r.status === 'resolved').length}
               </p>
             </div>
             <CheckCircle className="w-8 h-8" style={{ color: colors.success }} />
@@ -168,7 +188,7 @@ const ReportsPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: colors.text }}>Total Reports</p>
-              <p className="text-2xl font-bold" style={{ color: colors.text }}>{userReports.length}</p>
+              <p className="text-2xl font-bold" style={{ color: colors.text }}>{reports.length}</p>
             </div>
             <FileText className="w-8 h-8" style={{ color: colors.textMuted }} />
           </div>
@@ -177,144 +197,154 @@ const ReportsPage = () => {
 
       {/* Reports List */}
       <Card className="p-6">
-        <div className="space-y-4">
-          {userReports.map((report) => (
-            <div 
-              key={report.id}
-              className="border rounded-lg p-4 transition-all duration-200 hover:scale-[1.01]"
-              style={{ 
-                borderColor: colors.border,
-                backgroundColor: colors.bgCard
-              }}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge 
-                      style={{ 
-                        backgroundColor: getUrgencyColor(report.urgency) + '20',
-                        color: getUrgencyColor(report.urgency),
-                        borderColor: getUrgencyColor(report.urgency)
-                      }}
-                    >
-                      {report.urgency} priority
-                    </Badge>
-                    <Badge 
-                      style={{ 
-                        backgroundColor: colors.secondary + '20',
-                        color: colors.secondary,
-                        borderColor: colors.secondary
-                      }}
-                    >
-                      {report.type.replace('_', ' ')}
-                    </Badge>
-                    <Badge 
-                      style={{ 
-                        backgroundColor: getStatusColor(report.status) + '20',
-                        color: getStatusColor(report.status),
-                        borderColor: getStatusColor(report.status)
-                      }}
-                    >
-                      {report.status}
-                    </Badge>
-                  </div>
-                  
-                  <h4 className="font-semibold mb-2" style={{ color: colors.text }}>
-                    Report #{report.id}
-                  </h4>
-                  
-                  <p className="text-sm mb-3" style={{ color: colors.textSecondary }}>
-                    {report.description}
-                  </p>
-                  
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm" style={{ color: colors.textMuted }}>
-                    <div className="flex items-center gap-1">
-                      <MessageSquare size={12} />
-                      <span>{report.platform}</span>
+        {loading ? (
+          <div className="text-center py-8" style={{ color: colors.textSecondary }}>Loading reports...</div>
+        ) : error ? (
+          <div className="text-center py-8 text-red-500">{error}</div>
+        ) : (
+          <div className="space-y-4">
+            {reports.length === 0 ? (
+              <div className="text-center py-8" style={{ color: colors.textSecondary }}>No reports found.</div>
+            ) : (
+              reports.map((report) => (
+                <div 
+                  key={report.id}
+                  className="border rounded-lg p-4 transition-all duration-200 hover:scale-[1.01]"
+                  style={{ 
+                    borderColor: colors.border,
+                    backgroundColor: colors.bgCard
+                  }}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge 
+                          style={{ 
+                            backgroundColor: getUrgencyColor(report.urgency) + '20',
+                            color: getUrgencyColor(report.urgency),
+                            borderColor: getUrgencyColor(report.urgency)
+                          }}
+                        >
+                          {report.urgency} priority
+                        </Badge>
+                        <Badge 
+                          style={{ 
+                            backgroundColor: colors.secondary + '20',
+                            color: colors.secondary,
+                            borderColor: colors.secondary
+                          }}
+                        >
+                          {report.type.replace('_', ' ')}
+                        </Badge>
+                        <Badge 
+                          style={{ 
+                            backgroundColor: getStatusColor(report.status) + '20',
+                            color: getStatusColor(report.status),
+                            borderColor: getStatusColor(report.status)
+                          }}
+                        >
+                          {report.status}
+                        </Badge>
+                      </div>
+                      
+                      <h4 className="font-semibold mb-2" style={{ color: colors.text }}>
+                        Report #{report.id}
+                      </h4>
+                      
+                      <p className="text-sm mb-3" style={{ color: colors.textSecondary }}>
+                        {report.description}
+                      </p>
+                      
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm" style={{ color: colors.textMuted }}>
+                        <div className="flex items-center gap-1">
+                          <MessageSquare size={12} />
+                          <span>{report.platform}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <MapPin size={12} />
+                          <span>{report.location}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <User size={12} />
+                          <span>{report.engagement} engaged</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock size={12} />
+                          <span>{formatDate(report.submittedAt)}</span>
+                        </div>
+                      </div>
+                      
+                      {report.url && (
+                        <div className="mt-2">
+                          <a 
+                            href={report.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-sm flex items-center gap-1 hover:underline"
+                            style={{ color: colors.primary }}
+                          >
+                            <ExternalLink size={12} />
+                            View Original Content
+                          </a>
+                        </div>
+                      )}
+                      
+                      {report.contact && (
+                        <div className="mt-2">
+                          <span className="text-sm" style={{ color: colors.textMuted }}>
+                            Contact: {report.contact}
+                          </span>
+                        </div>
+                      )}
                     </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin size={12} />
-                      <span>{report.location}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <User size={12} />
-                      <span>{report.engagement} engaged</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock size={12} />
-                      <span>{formatDate(report.submittedAt)}</span>
-                    </div>
-                  </div>
-                  
-                  {report.url && (
-                    <div className="mt-2">
-                      <a 
-                        href={report.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-sm flex items-center gap-1 hover:underline"
-                        style={{ color: colors.primary }}
+                    
+                    <div className="flex flex-col gap-2 ml-4">
+                      <Button 
+                        variant="primary" 
+                        size="sm"
+                        onClick={() => setSelectedUserReport(report)}
                       >
-                        <ExternalLink size={12} />
-                        View Original Content
-                      </a>
+                        <Eye className="w-4 h-4 mr-1" />
+                        View Details
+                      </Button>
+                      
+                      {report.status === 'pending' && (
+                        <Button 
+                          variant="warning" 
+                          size="sm"
+                          onClick={() => handleReportAction(report.id, 'investigate')}
+                        >
+                          <AlertTriangle className="w-4 h-4 mr-1" />
+                          Investigate
+                        </Button>
+                      )}
+                      
+                      {report.status === 'investigating' && (
+                        <Button 
+                          variant="success" 
+                          size="sm"
+                          onClick={() => handleReportAction(report.id, 'resolve')}
+                        >
+                          <CheckCircle className="w-4 h-4 mr-1" />
+                          Resolve
+                        </Button>
+                      )}
+                      
+                      <Button 
+                        variant="danger" 
+                        size="sm"
+                        onClick={() => handleReportAction(report.id, 'delete')}
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        Delete
+                      </Button>
                     </div>
-                  )}
-                  
-                  {report.contact && (
-                    <div className="mt-2">
-                      <span className="text-sm" style={{ color: colors.textMuted }}>
-                        Contact: {report.contact}
-                      </span>
-                    </div>
-                  )}
+                  </div>
                 </div>
-                
-                <div className="flex flex-col gap-2 ml-4">
-                  <Button 
-                    variant="primary" 
-                    size="sm"
-                    onClick={() => setSelectedUserReport(report)}
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    View Details
-                  </Button>
-                  
-                  {report.status === 'pending' && (
-                    <Button 
-                      variant="warning" 
-                      size="sm"
-                      onClick={() => handleReportAction(report.id, 'investigate')}
-                    >
-                      <AlertTriangle className="w-4 h-4 mr-1" />
-                      Investigate
-                    </Button>
-                  )}
-                  
-                  {report.status === 'investigating' && (
-                    <Button 
-                      variant="success" 
-                      size="sm"
-                      onClick={() => handleReportAction(report.id, 'resolve')}
-                    >
-                      <CheckCircle className="w-4 h-4 mr-1" />
-                      Resolve
-                    </Button>
-                  )}
-                  
-                  <Button 
-                    variant="danger" 
-                    size="sm"
-                    onClick={() => handleReportAction(report.id, 'delete')}
-                  >
-                    <Trash2 className="w-4 h-4 mr-1" />
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+              ))
+            )}
+          </div>
+        )}
       </Card>
 
       {/* Report Detail Modal */}
@@ -453,6 +483,11 @@ const ReportsPage = () => {
     // Simulate report generation
     alert(`Generating ${reportTypes.find(r => r.id === selectedReport)?.name} report for ${dateRange} in ${reportFormat.toUpperCase()} format...`);
   };
+
+  // Fetch reports on mount
+  useEffect(() => {
+    getReportsFromApi();
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -597,9 +632,9 @@ const ReportsPage = () => {
                   <FileText className="w-5 h-5" style={{ color: colors.primary }} />
                 </div>
                 <div>
-                  <h4 className="font-semibold" style={{ color: colors.text }}>{report.name}</h4>
+                  <h4 className="font-semibold" style={{ color: colors.text }}>{report.reporter_name}</h4>
                   <p className="text-sm" style={{ color: colors.textSecondary }}>
-                    {report.type} • {report.date} • {report.size}
+                    {report.content_type} • {report.date_reported}
                   </p>
                 </div>
               </div>
@@ -609,11 +644,9 @@ const ReportsPage = () => {
                     report.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
                   }`}
                 >
-                  {report.status === 'completed' ? 'Completed' : 'Processing'}
+                  {report.status}
                 </span>
-                {report.status === 'completed' && (
-                  <Button variant="ghost" size="sm" icon={Download}>Download</Button>
-                )}
+                <Button variant="ghost" size="sm" icon={Settings}>Configure</Button>
               </div>
             </div>
           ))}
