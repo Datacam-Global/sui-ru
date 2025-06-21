@@ -88,14 +88,14 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
     }
   ];
 
-  const solutionsItems = [
-    {
-      title: "For Businesses",
-      description: "Enterprise solutions and consulting",
-      path: "/marketing",
-      icon: Building2
-    }
-  ];
+  // const solutionsItems = [
+  //   {
+  //     title: "For Businesses",
+  //     description: "Enterprise solutions and consulting",
+  //     path: "/marketing",
+  //     icon: Building2
+  //   }
+  // ];
 
   const resourcesItems = [
     {
