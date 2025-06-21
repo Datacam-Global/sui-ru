@@ -142,7 +142,7 @@ const MobileMenu = ({ user, handleAuthClick, onNavigate, isOpen, onClose, onLogo
               className="text-sm font-medium hover:scale-105 transition-transform justify-start"
             >
               <GraduationCap className="w-4 h-4 mr-2" />
-              Learn
+              Tips
             </Button>
 
             <MobileDropdownSection

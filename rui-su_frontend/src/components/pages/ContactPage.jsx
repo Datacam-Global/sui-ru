@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { Mail, Phone, Globe2, Shield, Building, AlertTriangle, Zap, Github, ExternalLink, Share2, Users, Flag, MessageSquare, Download, FileText, AlertCircle } from 'lucide-react';
+import { Mail, Phone, Globe2, Shield, Building, AlertTriangle, ExternalLink, Share2, Users, Flag, MessageSquare, Download, FileText, AlertCircle } from 'lucide-react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 
@@ -13,7 +13,7 @@ const ContactPage = () => {
       fullName: "Agence Nationale des Technologies de l'Information et de la Communication",
       description: "National ICT regulatory authority",
       contacts: [
-        { type: "Emergency Hotline", value: "+237 222 123 456", icon: Phone },
+        { type: "Emergency Hotline", value: "+237 653359620", icon: Phone },
         { type: "Email", value: "emergency@antic.cm", icon: Mail },
         { type: "Website", value: "https://www.antic.cm", icon: Globe2 }
       ],
@@ -33,11 +33,11 @@ const ContactPage = () => {
   ];
 
   const devTeamContacts = [
-    { type: "Technical Support", value: "+237 222 DEV TEAM", icon: Phone },
-    { type: "Development Team", value: "dev@sui-ru.com", icon: Mail },
-    { type: "Bug Reports", value: "bugs@sui-ru.com", icon: AlertTriangle },
-    { type: "Feature Requests", value: "features@sui-ru.com", icon: Zap },
-    { type: "GitHub Repository", value: "https://github.com/sui-ru/mhsms", icon: Github }
+    { type: "Technical Support", value: "+237 653359620", icon: Phone },
+    { type: "Development Team", value: "info@skye8.tech", icon: Mail },
+    { type: "Bug Reports", value: "info@skye8.tech", icon: AlertTriangle },
+    // { type: "Feature Requests", value: "features@sui-ru.com", icon: Zap },
+    // { type: "GitHub Repository", value: "https://github.com/sui-ru/mhsms", icon: Github }
   ];
 
   return (

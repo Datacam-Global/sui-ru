@@ -654,11 +654,11 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
                 <Button 
                   variant="primary" 
                   size="lg" 
-                  onClick={onDemoClick}
+                  onClick={() => navigate('/sui-learn')}
                   className="px-10 py-5 text-lg font-semibold"
                 >
                   <Eye className="w-6 h-6 mr-3" />
-                  Try Demo
+                  View Tips 
                 </Button>
               </div>
             </div>

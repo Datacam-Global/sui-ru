@@ -156,13 +156,13 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
               icon={Brain}
             />
 
-            <DropdownMenu
+            {/* <DropdownMenu
               title="Solutions"
               items={solutionsItems}
               isActive={activeDropdown === 'solutions'}
               onToggle={() => handleDropdownToggle('solutions')}
               icon={Building2}
-            />
+            /> */}
 
             <Button 
               variant="ghost" 
@@ -171,7 +171,7 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
               className="text-sm font-medium hover:scale-105 transition-transform"
             >
               <GraduationCap className="w-4 h-4 mr-1" />
-              Learn
+              Tips
             </Button>
 
             <DropdownMenu

@@ -10,10 +10,7 @@ import {
   Video, 
   Search,
   HelpCircle,
-  FileText,
-  Users,
   Shield,
-  Zap,
   Clock
 } from 'lucide-react';
 import Card from '../ui/Card';
@@ -144,34 +141,34 @@ const HelpCenterPage = () => {
       type: "Video",
       link: "/tutorials"
     },
-    {
-      title: "API Documentation",
-      description: "Technical documentation for developers",
-      icon: FileText,
-      type: "Technical",
-      link: "/docs/api"
-    },
+    // {
+    //   title: "API Documentation",
+    //   description: "Technical documentation for developers",
+    //   icon: FileText,
+    //   type: "Technical",
+    //   link: "/docs/api"
+    // },
     {
       title: "Best Practices",
       description: "Guidelines for effective content monitoring",
       icon: Shield,
       type: "Guide",
       link: "/docs/best-practices"
-    },
-    {
-      title: "Quick Start Guide",
-      description: "Get up and running in minutes",
-      icon: Zap,
-      type: "Getting Started",
-      link: "/docs/quick-start"
-    },
-    {
-      title: "Community Forum",
-      description: "Connect with other users and experts",
-      icon: Users,
-      type: "Community",
-      link: "/community"
     }
+    // {
+    //   title: "Quick Start Guide",
+    //   description: "Get up and running in minutes",
+    //   icon: Zap,
+    //   type: "Getting Started",
+    //   link: "/docs/quick-start"
+    // },
+    // {
+    //   title: "Community Forum",
+    //   description: "Connect with other users and experts",
+    //   icon: Users,
+    //   type: "Community",
+    //   link: "/community"
+    // }
   ];
 
   const contactOptions = [
@@ -179,7 +176,7 @@ const HelpCenterPage = () => {
       title: "Email Support",
       description: "Get help via email within 24 hours",
       icon: Mail,
-      contact: "support@sui-ru.com",
+      contact: "info@skye8.tech",
       availability: "24/7"
     },
     {
@@ -193,7 +190,7 @@ const HelpCenterPage = () => {
       title: "Phone Support",
       description: "Speak directly with our technical team",
       icon: Phone,
-      contact: "+1 (555) 123-4567",
+      contact: "+237 653359620",
       availability: "Mon-Fri 9AM-5PM UTC"
     }
   ];
