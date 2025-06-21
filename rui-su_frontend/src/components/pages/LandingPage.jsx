@@ -227,20 +227,20 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
               <Button 
                 variant="primary" 
                 size="lg" 
-                onClick={onDemoClick}
+                onClick={() => navigate('/report')}
                 className="px-8 py-4 text-lg font-semibold"
               >
                 <Eye className="w-6 h-6 mr-3" />
-                Explore Demo
+                Report Threat
               </Button>
               <Button 
                 variant="secondary" 
                 size="lg" 
-                onClick={() => onAuthClick('register')}
+                onClick={() => navigate('/image-detection')}
                 className="px-8 py-4 text-lg"
               >
                 <UserPlus className="w-6 h-6 mr-3" />
-                Sign Up
+                Image Analysis
               </Button>
             </div>
 
