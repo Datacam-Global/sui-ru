@@ -196,56 +196,74 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
     </Card>
   );
 
-  const GeographicIntelligence = () => (
-    <div className="space-y-6">
-      <Card className="p-6">
-        <h3 className="text-xl font-semibold mb-6 flex items-center gap-2" style={{ color: colors.text }}>
-          <Map className="w-5 h-5" style={{ color: colors.secondary }} />
-          Interactive Threat Map
-        </h3>
+  const GeographicIntelligence = React.memo(() => {
+    // Use a stable theme object that doesn't change
+    const stableTheme = {
+      primary: '#3b82f6',
+      secondary: '#1e40af',
+      accent: '#f59e0b',
+      background: '#1f2937',
+      surface: '#374151',
+      text: '#f9fafb',
+      textSecondary: '#d1d5db',
+      textMuted: '#9ca3af',
+      border: '#4b5563',
+      success: '#10b981',
+      warning: '#f59e0b',
+      error: '#ef4444'
+    };
+    
+    return (
+      <div className="space-y-6">
+        <Card className="p-6">
+          <h3 className="text-xl font-semibold mb-6 flex items-center gap-2" style={{ color: colors.text }}>
+            <Map className="w-5 h-5" style={{ color: colors.secondary }} />
+            Interactive Threat Map
+          </h3>
+          
+          <div className="mb-6">
+            <InteractiveMap key="stable-map" theme={stableTheme} />
+          </div>
+        </Card>
         
-        <div className="mb-6">
-          <InteractiveMap theme={colors} />
-        </div>
-      </Card>
-      
-      <Card className="p-6">
-        <h3 className="text-xl font-semibold mb-6 flex items-center gap-2" style={{ color: colors.text }}>
-          <Map className="w-5 h-5" style={{ color: colors.secondary }} />
-          Regional Intelligence
-        </h3>
-        
-        <div className="space-y-4">
-          {geographicData.map((region, index) => (
-            <div 
-              key={region.region} 
-              className="flex items-center justify-between p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]"
-              style={{ backgroundColor: colors.bgTertiary }}
-            >
-              <div className="flex items-center gap-3">
-                <div 
-                  className="w-3 h-3 rounded-full"
-                  style={{ 
-                    backgroundColor: region.severity === 'high' ? colors.danger :
-                                     region.severity === 'medium' ? colors.warning : colors.success
-                  }}
-                ></div>
-                <div>
-                  <div className="font-medium" style={{ color: colors.text }}>{region.region}</div>
-                  <div className="text-sm" style={{ color: colors.textSecondary }}>{region.population}M population</div>
+        <Card className="p-6">
+          <h3 className="text-xl font-semibold mb-6 flex items-center gap-2" style={{ color: colors.text }}>
+            <Map className="w-5 h-5" style={{ color: colors.secondary }} />
+            Regional Intelligence
+          </h3>
+          
+          <div className="space-y-4">
+            {geographicData.map((region, index) => (
+              <div 
+                key={region.region} 
+                className="flex items-center justify-between p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]"
+                style={{ backgroundColor: colors.bgTertiary }}
+              >
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-3 h-3 rounded-full"
+                    style={{ 
+                      backgroundColor: region.severity === 'high' ? colors.danger :
+                                       region.severity === 'medium' ? colors.warning : colors.success
+                    }}
+                  ></div>
+                  <div>
+                    <div className="font-medium" style={{ color: colors.text }}>{region.region}</div>
+                    <div className="text-sm" style={{ color: colors.textSecondary }}>{region.population}M population</div>
+                  </div>
+                </div>
+                
+                <div className="text-right">
+                  <div className="font-bold" style={{ color: colors.text }}>{region.threats}</div>
+                  <div className="text-xs" style={{ color: colors.textMuted }}>active threats</div>
                 </div>
               </div>
-              
-              <div className="text-right">
-                <div className="font-bold" style={{ color: colors.text }}>{region.threats}</div>
-                <div className="text-xs" style={{ color: colors.textMuted }}>active threats</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Card>
-    </div>
-  );
+            ))}
+          </div>
+        </Card>
+      </div>
+    );
+  });
 
   const renderTabContent = () => {
     switch(activeTab) {
