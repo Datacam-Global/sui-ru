@@ -36,73 +36,73 @@ const ReportsPage = () => {
   }
   
   // Mock user submitted reports data
-  const userReports = [
-    {
-      id: 'USR001',
-      type: 'misinformation',
-      platform: 'facebook',
-      url: 'https://facebook.com/post/123456',
-      description: 'False information about election results being spread in local groups',
-      urgency: 'high',
-      contact: 'user1@example.com',
-      submittedAt: '2024-06-20T10:30:00Z',
-      status: 'pending',
-      location: 'Douala, Cameroon',
-      engagement: 1250
-    },
-    {
-      id: 'USR002',
-      type: 'hate_speech',
-      platform: 'twitter',
-      url: 'https://twitter.com/user/status/789012',
-      description: 'Ethnic hate speech targeting specific communities',
-      urgency: 'critical',
-      contact: 'user2@example.com',
-      submittedAt: '2024-06-20T09:15:00Z',
-      status: 'investigating',
-      location: 'Yaoundé, Cameroon',
-      engagement: 890
-    },
-    {
-      id: 'USR003',
-      type: 'spam',
-      platform: 'whatsapp',
-      url: '',
-      description: 'Spam messages promoting fake investment schemes',
-      urgency: 'medium',
-      contact: '',
-      submittedAt: '2024-06-20T08:45:00Z',
-      status: 'resolved',
-      location: 'Bamenda, Cameroon',
-      engagement: 450
-    },
-    {
-      id: 'USR004',
-      type: 'fake_news',
-      platform: 'instagram',
-      url: 'https://instagram.com/p/345678',
-      description: 'Fake news about health crisis spreading panic',
-      urgency: 'high',
-      contact: 'user4@example.com',
-      submittedAt: '2024-06-19T16:20:00Z',
-      status: 'pending',
-      location: 'Garoua, Cameroon',
-      engagement: 2100
-    },
-    {
-      id: 'USR005',
-      type: 'harassment',
-      platform: 'tiktok',
-      url: 'https://tiktok.com/@user/video/567890',
-      description: 'Cyberbullying and harassment of minors',
-      urgency: 'critical',
-      contact: 'user5@example.com',
-      submittedAt: '2024-06-19T14:10:00Z',
-      status: 'investigating',
-      location: 'Maroua, Cameroon',
-      engagement: 750
-    }
-  ];
+  // const userReports = [
+  //   {
+  //     id: 'USR001',
+  //     type: 'misinformation',
+  //     platform: 'facebook',
+  //     url: 'https://facebook.com/post/123456',
+  //     description: 'False information about election results being spread in local groups',
+  //     urgency: 'high',
+  //     contact: 'user1@example.com',
+  //     submittedAt: '2024-06-20T10:30:00Z',
+  //     status: 'pending',
+  //     location: 'Douala, Cameroon',
+  //     engagement: 1250
+  //   },
+  //   {
+  //     id: 'USR002',
+  //     type: 'hate_speech',
+  //     platform: 'twitter',
+  //     url: 'https://twitter.com/user/status/789012',
+  //     description: 'Ethnic hate speech targeting specific communities',
+  //     urgency: 'critical',
+  //     contact: 'user2@example.com',
+  //     submittedAt: '2024-06-20T09:15:00Z',
+  //     status: 'investigating',
+  //     location: 'Yaoundé, Cameroon',
+  //     engagement: 890
+  //   },
+  //   {
+  //     id: 'USR003',
+  //     type: 'spam',
+  //     platform: 'whatsapp',
+  //     url: '',
+  //     description: 'Spam messages promoting fake investment schemes',
+  //     urgency: 'medium',
+  //     contact: '',
+  //     submittedAt: '2024-06-20T08:45:00Z',
+  //     status: 'resolved',
+  //     location: 'Bamenda, Cameroon',
+  //     engagement: 450
+  //   },
+  //   {
+  //     id: 'USR004',
+  //     type: 'fake_news',
+  //     platform: 'instagram',
+  //     url: 'https://instagram.com/p/345678',
+  //     description: 'Fake news about health crisis spreading panic',
+  //     urgency: 'high',
+  //     contact: 'user4@example.com',
+  //     submittedAt: '2024-06-19T16:20:00Z',
+  //     status: 'pending',
+  //     location: 'Garoua, Cameroon',
+  //     engagement: 2100
+  //   },
+  //   {
+  //     id: 'USR005',
+  //     type: 'harassment',
+  //     platform: 'tiktok',
+  //     url: 'https://tiktok.com/@user/video/567890',
+  //     description: 'Cyberbullying and harassment of minors',
+  //     urgency: 'critical',
+  //     contact: 'user5@example.com',
+  //     submittedAt: '2024-06-19T14:10:00Z',
+  //     status: 'investigating',
+  //     location: 'Maroua, Cameroon',
+  //     engagement: 750
+  //   }
+  // ];
 
   const handleReportAction = (reportId, action) => {
     console.log(`Performing ${action} on report ${reportId}`);
