@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Calendar, User, ArrowRight, TrendingUp, Shield, Brain, Globe, MessageSquare, BarChart3, Search, Loader2 } from 'lucide-react';
-import Button from '../ui/Button';
-import Card from '../ui/Card';
-import { blogService } from '../../services/apiService';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import { blogService } from '../services/apiService';
 
 const BlogPage = () => {
   const { colors } = useTheme();
@@ -22,12 +22,12 @@ const BlogPage = () => {
   // Load initial data
   useEffect(() => {
     loadInitialData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   // Load posts when category or page changes
   useEffect(() => {
     loadBlogPosts();
-  }, [currentPage, selectedCategory]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentPage, selectedCategory]);
 
   const loadInitialData = async () => {
     setLoading(true);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const Button = ({ children, variant = "primary", size = "md", icon: Icon, onClick, className = "", disabled = false, ...props }) => {
   const { colors } = useTheme();

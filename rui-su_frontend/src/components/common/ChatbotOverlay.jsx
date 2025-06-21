@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { Brain, X, MessageSquare } from 'lucide-react';
 import axiosInstance from '../../axiosInstance';
 

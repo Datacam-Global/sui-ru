@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { Shield, Menu, X, Home, MessageSquare, Camera, Phone, ChevronDown, Brain, GraduationCap, FileText, HelpCircle } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
+import { Shield, Menu, X, Home, MessageSquare, Camera, Phone, ChevronDown, Brain, GraduationCap, FileText, HelpCircle, Building2 } from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext';
 import Button from '../ui/Button';
 import ThemeToggle from '../common/ThemeToggle';
 import { AuthContext } from '../../AuthProvider';
@@ -88,20 +88,20 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
     }
   ];
 
-  // const solutionsItems = [
-  //   {
-  //     title: "For Businesses",
-  //     description: "Enterprise solutions and consulting",
-  //     path: "/marketing",
-  //     icon: Building2
-  //   }
-  // ];
+  const solutionsItems = [
+    {
+      title: "For Businesses",
+      description: "Enterprise solutions and consulting",
+      path: "/marketing",
+      icon: Building2
+    }
+  ];
 
   const resourcesItems = [
     {
       title: "Blog & News",
       description: "Latest updates and insights",
-      path: "/blog",
+      path: "/news",
       icon: FileText
     },
     {
@@ -156,13 +156,13 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
               icon={Brain}
             />
 
-            {/* <DropdownMenu
+            <DropdownMenu
               title="Solutions"
               items={solutionsItems}
               isActive={activeDropdown === 'solutions'}
               onToggle={() => handleDropdownToggle('solutions')}
               icon={Building2}
-            /> */}
+            />
 
             <Button 
               variant="ghost" 
