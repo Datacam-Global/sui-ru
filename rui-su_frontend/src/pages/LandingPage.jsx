@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
@@ -8,6 +9,7 @@ import 'leaflet/dist/leaflet.css';
 
 const LandingPage = ({ onAuthClick, onDemoClick }) => {
   const { colors } = useTheme();
+  const navigate = useNavigate();
   const [stats] = useState({
     contentMonitored: 2480000,
     accuracyRate: 94,
@@ -208,20 +210,20 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
               <Button 
                 variant="primary" 
                 size="lg" 
-                onClick={onDemoClick}
+                onClick={() => onAuthClick('login')}
                 className="px-8 py-4 text-lg font-semibold"
               >
                 <Eye className="w-6 h-6 mr-3" />
-                Explore Demo
+                Login
               </Button>
               <Button 
                 variant="secondary" 
                 size="lg" 
-                onClick={() => onAuthClick('register')}
+                onClick={() => onAuthClick('login')}
                 className="px-8 py-4 text-lg"
               >
                 <UserPlus className="w-6 h-6 mr-3" />
-                Sign Up
+                Login
               </Button>
             </div>
 
@@ -269,8 +271,9 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card 
-              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden" 
+              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden cursor-pointer" 
               glow
+              onClick={() => navigate('/dashboard')}
             >
               <div className="absolute inset-0 bg-gradient-to-br opacity-5" style={{ background: colors.gradientPrimary }} />
               <div 
@@ -287,8 +290,9 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
             </Card>
 
             <Card 
-              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden" 
+              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden cursor-pointer" 
               glow
+              onClick={() => navigate('/geographic-intel')}
             >
               <div className="absolute inset-0 bg-gradient-to-br opacity-5" style={{ background: colors.gradientSecondary }} />
               <div 
@@ -305,8 +309,9 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
             </Card>
 
             <Card 
-              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden" 
+              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden cursor-pointer" 
               glow
+              onClick={() => navigate('/live-monitoring')}
             >
               <div className="absolute inset-0 bg-gradient-to-br opacity-5" style={{ background: colors.gradientSuccess }} />
               <div 
@@ -323,8 +328,9 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
             </Card>
 
             <Card 
-              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden" 
+              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden cursor-pointer" 
               glow
+              onClick={() => navigate('/dashboard')}
             >
               <div className="absolute inset-0 bg-gradient-to-br opacity-5" style={{ background: colors.gradientDanger }} />
               <div 
@@ -635,11 +641,11 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
                 <Button 
                   variant="primary" 
                   size="lg" 
-                  onClick={onDemoClick}
+                  onClick={() => onAuthClick('login')}
                   className="px-10 py-5 text-lg font-semibold"
                 >
                   <Eye className="w-6 h-6 mr-3" />
-                  Try Demo
+                  Login
                 </Button>
               </div>
             </div>

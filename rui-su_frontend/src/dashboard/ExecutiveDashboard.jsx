@@ -184,9 +184,6 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
                 >
                   {alert.status}
                 </Badge>
-                <Button variant="ghost" size="sm">
-                  <ExternalLink size={14} />
-                </Button>
               </div>
             </div>
           </div>
@@ -254,12 +251,13 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <Card 
-                className="p-6 transition-all duration-300 hover:scale-105" 
+                className="p-6 transition-all duration-300 hover:scale-105 cursor-pointer" 
                 glow
                 style={{ 
                   background: `linear-gradient(135deg, ${colors.primary}20 0%, ${colors.primary}10 100%)`,
                   borderColor: `${colors.primary}30`
                 }}
+                onClick={() => navigate('/content-queue')}
               >
                 <div className="flex items-center justify-between">
                   <div>
@@ -281,12 +279,13 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
               </Card>
 
               <Card 
-                className="p-6 transition-all duration-300 hover:scale-105" 
+                className="p-6 transition-all duration-300 hover:scale-105 cursor-pointer" 
                 glow
                 style={{ 
                   background: `linear-gradient(135deg, ${colors.danger}20 0%, ${colors.danger}10 100%)`,
                   borderColor: `${colors.danger}30`
                 }}
+                onClick={() => setActiveTab('analytics')}
               >
                 <div className="flex items-center justify-between">
                   <div>
@@ -1376,7 +1375,7 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
                 Last updated: {realTimeData.lastUpdate.toLocaleTimeString()}
               </div>
               
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" onClick={() => setActiveTab('settings')}>
                 <Settings size={16} />
               </Button>
             </div>

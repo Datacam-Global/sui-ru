@@ -1,11 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
-import { Mail, Phone, Globe2, Shield, Building, AlertTriangle, Zap, Github, ExternalLink, Share2, Users, Flag, MessageSquare, Download, FileText, AlertCircle } from 'lucide-react';
+import { Mail, Phone, Globe2, Shield, Building, AlertTriangle, Zap, ExternalLink, Share2, Users, Flag, MessageSquare, Download, FileText, AlertCircle } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 
 const ContactPage = () => {
   const { colors } = useTheme();
+  const navigate = useNavigate();
 
   const emergencyContacts = [
     {
@@ -33,11 +35,11 @@ const ContactPage = () => {
   ];
 
   const devTeamContacts = [
-    { type: "Technical Support", value: "+237 222 DEV TEAM", icon: Phone },
+    { type: "Phone Support", value: "+237 653359620", icon: Phone },
+    { type: "Email", value: "info@skye8.tech", icon: Mail },
     { type: "Development Team", value: "dev@sui-ru.com", icon: Mail },
-    { type: "Bug Reports", value: "bugs@sui-ru.com", icon: AlertTriangle },
-    { type: "Feature Requests", value: "features@sui-ru.com", icon: Zap },
-    { type: "GitHub Repository", value: "https://github.com/sui-ru/mhsms", icon: Github }
+    { type: "Bug Reports", value: "dev@sui-ru.com", icon: AlertTriangle },
+    { type: "Feature Requests", value: "dev@sui-ru.com", icon: Zap }
   ];
 
   return (
@@ -160,7 +162,7 @@ const ContactPage = () => {
 
           <div className="mt-8 p-6 rounded-lg" style={{ backgroundColor: colors.bgTertiary }}>
             <h3 className="text-xl font-semibold mb-4" style={{ color: colors.text }}>
-              Support Hours
+              Support Hours (UTC)
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
               <div>
@@ -169,7 +171,7 @@ const ContactPage = () => {
               </div>
               <div>
                 <h4 className="font-semibold mb-2" style={{ color: colors.text }}>General Support</h4>
-                <p style={{ color: colors.textSecondary }}>Monday - Friday, 8:00 AM - 6:00 PM WAT</p>
+                <p style={{ color: colors.textSecondary }}>Monday - Friday, 7:00 AM - 5:00 PM UTC</p>
               </div>
             </div>
           </div>
@@ -181,7 +183,7 @@ const ContactPage = () => {
             Quick Actions
           </h2>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button variant="primary" icon={Flag}>
+            <Button variant="primary" icon={Flag} onClick={() => navigate('/report')}>
               Report Incident
             </Button>
             <Button variant="secondary" icon={MessageSquare}>
@@ -190,7 +192,7 @@ const ContactPage = () => {
             <Button variant="ghost" icon={Download}>
               Download Contact List
             </Button>
-            <Button variant="ghost" icon={FileText}>
+            <Button variant="ghost" icon={FileText} onClick={() => navigate('/emergency-procedures')}>
               Emergency Procedures
             </Button>
           </div>

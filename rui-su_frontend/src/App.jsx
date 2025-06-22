@@ -18,6 +18,8 @@ import MarketingPage from './pages/MarketingPage';
 import BlogPage from './pages/BlogPage';
 import NewsPage from './pages/NewsPage';
 import HelpCenterPage from './pages/HelpCenterPage';
+import ContentQueuePage from './pages/ContentQueuePage';
+import EmergencyProceduresPage from './pages/EmergencyProceduresPage';
 import ChatbotOverlay from './components/common/ChatbotOverlay'; 
 import PublicRoute from './PublicRoutes';
 import PrivateRoutes from './PrivateRoutes';
@@ -153,9 +155,11 @@ function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/news" element={<NewsPage />} />
         <Route path="/help" element={<HelpCenterPage />} />
+        <Route path="/emergency-procedures" element={<EmergencyProceduresPage />} />
         {/* Private routes */}
         <Route path="/alert-management" element={<PrivateRoutes><AlertManagementPage /></PrivateRoutes>} />
         <Route path="/dashboard" element={<PrivateRoutes><ExecutiveDashboard user={user} onLogout={handleLogout} onAnalystClick={handleAnalystClick} /></PrivateRoutes>} />
+        <Route path="/content-queue" element={<PrivateRoutes><ContentQueuePage /></PrivateRoutes>} />
         <Route path="/platform-analysis" element={<PrivateRoutes><PlatformAnalysisPage /></PrivateRoutes>} />
         <Route path="/reports" element={<PrivateRoutes><ReportPage /></PrivateRoutes>} />
         <Route path="/analyst" element={<PrivateRoutes><AnalystWorkstation onLogout={handleLogout} /></PrivateRoutes>} />
