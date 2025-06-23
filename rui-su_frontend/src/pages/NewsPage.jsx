@@ -55,48 +55,8 @@ const NewsPage = () => {
     setCategoryCounts(counts);
   }, []);
 
-  // Load category counts on initial load
-  useEffect(() => {
-    loadCategoryCounts();
-  }, [loadCategoryCounts]);
-
-  // Load initial data
-  useEffect(() => {
-    loadInitialData();
-  }, []);
-
-  // Load news when category changes (but not page)
-  useEffect(() => {
-    if (currentPage === 1) {
-      loadNews();
-    }
-  }, [selectedCategory]);
-
-  const loadInitialData = async () => {
-    setLoading(true);
-    try {
-      // Load breaking news (top headlines)
-      const breakingResult = await newsService.getTopHeadlines('us', null, 1, 1);
-      if (breakingResult.success && breakingResult.articles.length > 0) {
-        setBreakingNews(breakingResult.articles[0]);
-      }
-
-      // Load sources
-      const sourcesResult = await newsService.getSources();
-      if (sourcesResult.success) {
-        setSources(sourcesResult.sources.slice(0, 10)); // Limit to 10 sources
-      }
-
-      await loadNews();
-    } catch (err) {
-      setError('Failed to load news data');
-      console.error('Error loading initial data:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadNews = async (isLoadMore = false) => {
+  // Move loadNews above loadInitialData
+  const loadNews = useCallback(async (isLoadMore = false) => {
     setArticlesLoading(true);
     try {
       let result;
@@ -141,7 +101,41 @@ const NewsPage = () => {
     } finally {
       setArticlesLoading(false);
     }
-  };
+  }, [selectedCategory, currentPage, searchQuery]);
+
+  const loadInitialData = useCallback(async () => {
+    setLoading(true);
+    try {
+      // Load breaking news (top headlines)
+      const breakingResult = await newsService.getTopHeadlines('us', null, 1, 1);
+      if (breakingResult.success && breakingResult.articles.length > 0) {
+        setBreakingNews(breakingResult.articles[0]);
+      }
+
+      // Load sources
+      const sourcesResult = await newsService.getSources();
+      if (sourcesResult.success) {
+        setSources(sourcesResult.sources.slice(0, 10)); // Limit to 10 sources
+      }
+
+      await loadNews();
+    } catch (err) {
+      setError('Failed to load news data');
+      console.error('Error loading initial data:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [loadNews]);
+
+  useEffect(() => {
+    loadInitialData();
+  }, [loadInitialData]);
+
+  useEffect(() => {
+    if (currentPage === 1) {
+      loadNews();
+    }
+  }, [selectedCategory, currentPage, loadNews]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
