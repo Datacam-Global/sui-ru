@@ -5,7 +5,6 @@ import {
   AlertTriangle, 
   Shield, 
   Phone, 
-  Mail, 
   Clock, 
   Users, 
   FileText, 
@@ -16,21 +15,15 @@ import {
   Eye, 
   MessageSquare, 
   Globe, 
-  Lock, 
-  Database, 
-  Wifi, 
-  Server, 
-  Monitor, 
-  Smartphone, 
-  Camera, 
-  Headphones,
   ChevronDown,
   ChevronRight,
   Search,
   Download,
   ExternalLink,
   Flag,
-  ArrowLeft
+  ArrowLeft,
+  Database,
+  Server
 } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';

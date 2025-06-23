@@ -11,15 +11,11 @@ import {
   Users, 
   AlertTriangle, 
   Eye, 
-  Filter, 
   Search, 
   RefreshCw,
   Play,
   Pause,
-  ArrowUp,
-  ArrowDown,
   CheckCircle,
-  XCircle,
   Flag
 } from 'lucide-react';
 

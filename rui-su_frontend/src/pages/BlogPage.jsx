@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Calendar, User, ArrowRight, TrendingUp, Shield, Brain, Globe, MessageSquare, BarChart3, Search, Loader2 } from 'lucide-react';
 import Button from '../components/ui/Button';
@@ -19,17 +19,7 @@ const BlogPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [email, setEmail] = useState('');
 
-  // Load initial data
-  useEffect(() => {
-    loadInitialData();
-  }, []);
-
-  // Load posts when category or page changes
-  useEffect(() => {
-    loadBlogPosts();
-  }, [currentPage, selectedCategory]);
-
-  const loadInitialData = async () => {
+  const loadInitialData = useCallback(async () => {
     setLoading(true);
     try {
       const [featuredResult, categoriesResult] = await Promise.all([
@@ -52,9 +42,9 @@ const BlogPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [loadBlogPosts]);
 
-  const loadBlogPosts = async () => {
+  const loadBlogPosts = useCallback(async () => {
     setPostsLoading(true);
     try {
       const result = await blogService.getBlogPosts(
@@ -75,7 +65,15 @@ const BlogPage = () => {
     } finally {
       setPostsLoading(false);
     }
-  };
+  }, [currentPage, selectedCategory]);
+
+  useEffect(() => {
+    loadInitialData();
+  }, [loadInitialData]);
+
+  useEffect(() => {
+    loadBlogPosts();
+  }, [loadBlogPosts]);
 
   const handleSearch = async (e) => {
     e.preventDefault();

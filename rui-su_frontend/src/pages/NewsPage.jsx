@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Calendar, User, ArrowRight, AlertTriangle, Shield, Globe, MessageSquare, Camera, BarChart3, Eye, Search, Loader2, RefreshCw } from 'lucide-react';
 import Button from '../components/ui/Button';
@@ -19,14 +19,14 @@ const NewsPage = () => {
   const [sources, setSources] = useState([]);
   const [categoryCounts, setCategoryCounts] = useState({});
 
-  const categories = [
+  const categories = useMemo(() => [
     { id: 'general', name: 'General', icon: Globe },
     { id: 'technology', name: 'Technology', icon: BarChart3 },
     { id: 'business', name: 'Business', icon: MessageSquare },
     { id: 'health', name: 'Health', icon: Shield },
     { id: 'science', name: 'Science', icon: Camera },
     { id: 'sports', name: 'Sports', icon: Eye }
-  ];
+  ], []);
 
   const trendingTopics = [
     { name: "AI Content Moderation", trend: "+45%", icon: BarChart3 },
