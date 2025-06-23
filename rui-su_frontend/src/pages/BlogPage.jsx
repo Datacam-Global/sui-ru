@@ -19,6 +19,29 @@ const BlogPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [email, setEmail] = useState('');
 
+  const loadBlogPosts = useCallback(async () => {
+    setPostsLoading(true);
+    try {
+      const result = await blogService.getBlogPosts(
+        currentPage, 
+        6, 
+        selectedCategory === 'all' ? null : selectedCategory
+      );
+
+      if (result.success) {
+        setBlogPosts(result.posts);
+        setTotalPages(result.totalPages);
+      } else {
+        setError(result.error || 'Failed to load blog posts');
+      }
+    } catch (err) {
+      setError('Failed to load blog posts');
+      console.error('Error loading blog posts:', err);
+    } finally {
+      setPostsLoading(false);
+    }
+  }, [currentPage, selectedCategory]);
+
   const loadInitialData = useCallback(async () => {
     setLoading(true);
     try {
@@ -43,29 +66,6 @@ const BlogPage = () => {
       setLoading(false);
     }
   }, [loadBlogPosts]);
-
-  const loadBlogPosts = useCallback(async () => {
-    setPostsLoading(true);
-    try {
-      const result = await blogService.getBlogPosts(
-        currentPage, 
-        6, 
-        selectedCategory === 'all' ? null : selectedCategory
-      );
-
-      if (result.success) {
-        setBlogPosts(result.posts);
-        setTotalPages(result.totalPages);
-      } else {
-        setError(result.error || 'Failed to load blog posts');
-      }
-    } catch (err) {
-      setError('Failed to load blog posts');
-      console.error('Error loading blog posts:', err);
-    } finally {
-      setPostsLoading(false);
-    }
-  }, [currentPage, selectedCategory]);
 
   useEffect(() => {
     loadInitialData();
