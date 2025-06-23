@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Calendar, User, ArrowRight, AlertTriangle, Shield, Globe, MessageSquare, Camera, BarChart3, Eye, Search, Loader2, RefreshCw } from 'lucide-react';
 import Button from '../components/ui/Button';
@@ -37,24 +37,8 @@ const NewsPage = () => {
     { name: "Platform Accountability", trend: "+41%", icon: Globe }
   ];
 
-  // Load initial data
-  useEffect(() => {
-    loadInitialData();
-  }, []);
-
-  // Load news when category changes (but not page)
-  useEffect(() => {
-    if (currentPage === 1) {
-      loadNews();
-    }
-  }, [selectedCategory]);
-
-  // Load category counts on initial load
-  useEffect(() => {
-    loadCategoryCounts();
-  }, [loadCategoryCounts]);
-
-  const loadCategoryCounts = async () => {
+  // Define loadCategoryCounts before useEffect
+  const loadCategoryCounts = useCallback(async () => {
     const counts = {};
     for (const category of categories) {
       try {
@@ -69,7 +53,24 @@ const NewsPage = () => {
       }
     }
     setCategoryCounts(counts);
-  };
+  }, []);
+
+  // Load category counts on initial load
+  useEffect(() => {
+    loadCategoryCounts();
+  }, [loadCategoryCounts]);
+
+  // Load initial data
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
+  // Load news when category changes (but not page)
+  useEffect(() => {
+    if (currentPage === 1) {
+      loadNews();
+    }
+  }, [selectedCategory]);
 
   const loadInitialData = async () => {
     setLoading(true);
