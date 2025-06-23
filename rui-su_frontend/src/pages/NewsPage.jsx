@@ -9,7 +9,6 @@ const NewsPage = () => {
   const { colors } = useTheme();
   const [breakingNews, setBreakingNews] = useState(null);
   const [newsArticles, setNewsArticles] = useState([]);
-  const [allArticles, setAllArticles] = useState([]); // Store all loaded articles
   const [loading, setLoading] = useState(true);
   const [articlesLoading, setArticlesLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -37,7 +36,6 @@ const NewsPage = () => {
     { name: "Platform Accountability", trend: "+41%", icon: Globe }
   ];
 
-  // Define loadCategoryCounts before useEffect
   const loadCategoryCounts = useCallback(async () => {
     const counts = {};
     for (const category of categories) {
@@ -53,9 +51,8 @@ const NewsPage = () => {
       }
     }
     setCategoryCounts(counts);
-  }, []);
+  }, [categories]);
 
-  // Move loadNews above loadInitialData
   const loadNews = useCallback(async (isLoadMore = false) => {
     setArticlesLoading(true);
     try {
@@ -82,11 +79,9 @@ const NewsPage = () => {
 
         if (isLoadMore) {
           // Append new articles to existing ones
-          setAllArticles(prev => [...prev, ...filteredArticles]);
           setNewsArticles(prev => [...prev, ...filteredArticles]);
         } else {
           // Replace articles for new search/category
-          setAllArticles(filteredArticles);
           setNewsArticles(filteredArticles);
           setCurrentPage(1);
         }
@@ -151,7 +146,6 @@ const NewsPage = () => {
     setCurrentPage(1);
     setSearchQuery('');
     setNewsArticles([]);
-    setAllArticles([]);
   };
 
   const handleLoadMore = async () => {
@@ -163,7 +157,6 @@ const NewsPage = () => {
   const handleRefresh = () => {
     setCurrentPage(1);
     setNewsArticles([]);
-    setAllArticles([]);
     loadInitialData();
     loadCategoryCounts();
   };
