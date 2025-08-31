@@ -55,6 +55,12 @@ const MobileMenu = ({ user, handleAuthClick, onNavigate, isOpen, onClose, onLogo
 
   const servicesItems = [
     {
+      title: "Model Testing",
+      description: "Test our hate speech detection AI",
+      path: "/model-testing",
+      icon: Brain
+    },
+    {
       title: "Image Detection AI",
       description: "Advanced AI-powered image analysis",
       path: "/image-detection",

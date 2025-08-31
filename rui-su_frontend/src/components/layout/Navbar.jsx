@@ -69,6 +69,12 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
 
   const servicesItems = [
     {
+      title: "Model Testing",
+      description: "Test our hate speech detection AI",
+      path: "/model-testing",
+      icon: Brain
+    },
+    {
       title: "Image Detection AI",
       description: "Advanced AI-powered image analysis",
       path: "/image-detection",

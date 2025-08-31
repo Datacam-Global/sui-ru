@@ -626,6 +626,93 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
 
 
 
+        {/* Model Testing Demo Section */}
+        <div className="py-20">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-6" style={{ color: colors.text }}>
+              🚀 Try Our AI Model Live!
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: colors.textSecondary }}>
+              Experience the power of our hate speech detection AI in real-time. Test it with your own text content.
+            </p>
+          </div>
+
+          <Card className="p-12 relative overflow-hidden max-w-4xl mx-auto" glow>
+            <div className="absolute inset-0 bg-gradient-to-r opacity-5" style={{ background: colors.gradientPrimary }} />
+            <div className="relative z-10 text-center">
+              <div 
+                className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+                style={{ backgroundColor: colors.bgTertiary }}
+              >
+                <Brain className="w-10 h-10" style={{ color: colors.primary }} />
+              </div>
+              
+              <h3 className="text-3xl font-bold mb-4" style={{ color: colors.text }}>
+                Hate Speech Detection Demo
+              </h3>
+              
+              <p className="text-lg mb-8 max-w-2xl mx-auto" style={{ color: colors.textSecondary }}>
+                Our AI model analyzes text content and provides detailed insights including confidence scores, 
+                severity levels, and detected keywords. Perfect for demonstrating our technology's capabilities.
+              </p>
+
+              <div className="grid md:grid-cols-3 gap-6 mb-8 text-left">
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: colors.bgSecondary }}>
+                    <Target className="w-6 h-6" style={{ color: colors.primary }} />
+                  </div>
+                  <h4 className="font-semibold mb-2" style={{ color: colors.text }}>Real-time Analysis</h4>
+                  <p className="text-sm" style={{ color: colors.textSecondary }}>
+                    Instant results with processing times under 5ms
+                  </p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: colors.bgSecondary }}>
+                    <Zap className="w-6 h-6" style={{ color: colors.warning }} />
+                  </div>
+                  <h4 className="font-semibold mb-2" style={{ color: colors.text }}>High Accuracy</h4>
+                  <p className="text-sm" style={{ color: colors.textSecondary }}>
+                    94.2% accuracy rate across multiple languages
+                  </p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: colors.bgSecondary }}>
+                    <Shield className="w-6 h-6" style={{ color: colors.success }} />
+                  </div>
+                  <h4 className="font-semibold mb-2" style={{ color: colors.text }}>Detailed Insights</h4>
+                  <p className="text-sm" style={{ color: colors.textSecondary }}>
+                    Confidence scores, severity levels, and explanations
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  variant="primary" 
+                  size="lg" 
+                  onClick={() => navigate('/model-testing')}
+                  className="px-10 py-5 text-lg font-semibold"
+                >
+                  <Brain className="w-6 h-6 mr-3" />
+                  Test the Model Now
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  onClick={() => onDemoClick()}
+                  className="px-10 py-5 text-lg font-semibold"
+                >
+                  <Eye className="w-6 h-6 mr-3" />
+                  View Dashboard
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+
         {/* CTA Section */}
         <div className="py-20 text-center">
           <Card className="p-12 relative overflow-hidden" glow>

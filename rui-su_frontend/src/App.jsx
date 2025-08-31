@@ -11,6 +11,7 @@ import AboutPage from './pages/AboutPage';
 import FAQPage from './pages/FAQPage';
 import ChatbotPage from './pages/ChatbotPage';
 import ImageDetectionPage from './pages/ImageDetectionPage';
+import ModelTestingPage from './pages/ModelTestingPage';
 import ReportPage from './pages/ReportPage';
 import ContactPage from './pages/ContactPage';
 import SUILearnPage from './pages/SUILearnPage';
@@ -146,6 +147,7 @@ function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
         <Route path="/faq" element={<FAQPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/image-detection" element={<ImageDetectionPage />} />
+        <Route path="/model-testing" element={<ModelTestingPage />} />
         <Route path="/chatbot" element={<ChatbotPage />} />
         <Route path="/report" element={<ReportPage />} />
         <Route path="/sui-learn" element={<SUILearnPage />} />

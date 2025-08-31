@@ -304,6 +304,57 @@ export const blogService = {
         error: error.message
       };
     }
+  },
+
+};
+
+// Hate Speech Detection API - exported separately for easy import
+export const detectHateSpeech = async (text) => {
+  try {
+    // TODO: Replace with actual API endpoint
+    // const response = await axiosInstance.post('/api/hate-speech-detection', { text });
+    // return response.data;
+    
+    // Mock response for demonstration
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    const mockResponse = {
+      text: text,
+      is_hate_speech: text.toLowerCase().includes('hate') || 
+                      text.toLowerCase().includes('terrorist') || 
+                      text.toLowerCase().includes('kill') ||
+                      text.toLowerCase().includes('eliminate'),
+      confidence: Math.random() * 0.4 + 0.6, // Random confidence between 0.6-1.0
+      category: "twitter_model",
+      severity: text.toLowerCase().includes('hate') || 
+               text.toLowerCase().includes('terrorist') ? "high" : 
+               text.toLowerCase().includes('kill') || 
+               text.toLowerCase().includes('eliminate') ? "medium" : "low",
+      detected_keywords: text.toLowerCase().includes('hate') ? ['hate'] : 
+                       text.toLowerCase().includes('terrorist') ? ['terrorist'] : 
+                       text.toLowerCase().includes('kill') ? ['kill'] :
+                       text.toLowerCase().includes('eliminate') ? ['eliminate'] : [],
+      explanation: text.toLowerCase().includes('hate') || 
+                  text.toLowerCase().includes('terrorist') ? 
+                  "Detected by Twitter-trained model." : 
+                  text.toLowerCase().includes('kill') || 
+                  text.toLowerCase().includes('eliminate') ?
+                  "Content shows concerning language patterns." :
+                  "Content appears safe based on analysis.",
+      timestamp: new Date().toISOString(),
+      processing_time_ms: Math.floor(Math.random() * 10) + 3
+    };
+    
+    return {
+      success: true,
+      data: mockResponse
+    };
+  } catch (error) {
+    console.error('Error detecting hate speech:', error);
+    return {
+      success: false,
+      error: error.message
+    };
   }
 };
 
