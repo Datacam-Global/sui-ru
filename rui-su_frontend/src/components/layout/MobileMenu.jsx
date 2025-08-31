@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Home, MessageSquare, Camera, Phone, ChevronDown, Brain, BarChart3, GraduationCap, FileText, HelpCircle, Building2} from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import Button from '../ui/Button';
 
 const MobileMenu = ({ user, handleAuthClick, onNavigate, isOpen, onClose, onLogout }) => {
@@ -54,6 +54,12 @@ const MobileMenu = ({ user, handleAuthClick, onNavigate, isOpen, onClose, onLogo
   );
 
   const servicesItems = [
+    {
+      title: "Model Testing",
+      description: "Test our hate speech detection AI",
+      path: "/model-testing",
+      icon: Brain
+    },
     {
       title: "Image Detection AI",
       description: "Advanced AI-powered image analysis",
@@ -142,7 +148,7 @@ const MobileMenu = ({ user, handleAuthClick, onNavigate, isOpen, onClose, onLogo
               className="text-sm font-medium hover:scale-105 transition-transform justify-start"
             >
               <GraduationCap className="w-4 h-4 mr-2" />
-              Learn
+              Tips
             </Button>
 
             <MobileDropdownSection

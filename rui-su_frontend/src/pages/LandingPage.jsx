@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useTheme } from '../contexts/ThemeContext';
-import Button from '../ui/Button';
-import Card from '../ui/Card';
-import InteractiveMap from '../../InteractiveMapLeaflet';
-import { Globe, Shield, Activity, Search, Eye, Zap, Globe2, Network, Brain, Radar, Target, UserPlus, Building, Cpu, User, CheckCircle, Camera, Video, Play, Send, Users2, MessageSquare, MessageCircle, Heart, Vote } from 'lucide-react';
-import 'leaflet/dist/leaflet.css';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../contexts/ThemeContext';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import { Globe, Shield, Activity, Search, Eye, Zap, Globe2, Network, Brain, Radar, Target, UserPlus, Building, Cpu, User, CheckCircle, Camera, Video, Play, Send, Users2, MessageSquare, MessageCircle, Heart, Vote } from 'lucide-react';
+import InteractiveMap from '../InteractiveMapLeaflet';
+import 'leaflet/dist/leaflet.css';
 
 const LandingPage = ({ onAuthClick, onDemoClick }) => {
   const { colors } = useTheme();
+  const navigate = useNavigate();
   const [stats] = useState({
     contentMonitored: 2480000,
     accuracyRate: 94,
@@ -17,8 +18,6 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
     countriesProtected: 15,
     responseTime: 2.3
   });
-  const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate();
 
   // Dynamic Text Animation Component
   const DynamicWelcomeText = () => {
@@ -139,13 +138,6 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
     </div>
   );
 
-  const handleSearch = () => {
-    // Redirect to chatbot with the search query
-    if (searchTerm.trim()) {
-      navigate(`/chatbot?query=${encodeURIComponent(searchTerm)}`);
-    }
-  };
-
   return (
     <div 
       className="pt-16 min-h-screen relative overflow-hidden transition-all duration-500"
@@ -191,34 +183,25 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
 
               {/* Search Bar */}
               <div className="max-w-md">
-                <form 
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSearch();
+                <div 
+                  className="flex items-center px-6 py-4 rounded-2xl border backdrop-blur-sm transition-all duration-300 hover:scale-105 focus-within:scale-105"
+                  style={{ 
+                    backgroundColor: colors.bgCard,
+                    borderColor: colors.border,
+                    boxShadow: `0 0 40px ${colors.primary}10`
                   }}
                 >
-                  <div 
-                    className="flex items-center px-6 py-4 rounded-2xl border backdrop-blur-sm transition-all duration-300 hover:scale-105 focus-within:scale-105"
-                    style={{ 
-                      backgroundColor: colors.bgCard,
-                      borderColor: colors.border,
-                      boxShadow: `0 0 40px ${colors.primary}10`
-                    }}
-                  >
-                    <Search className="w-5 h-5 mr-4" style={{ color: colors.textMuted }} />
-                    <input
-                      type="text"
-                      placeholder="Search threats, content, or regions..."
-                      className="flex-1 bg-transparent outline-none text-lg"
-                      style={{ color: colors.text }}
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <Button type="submit" variant="primary" size="sm" className="ml-2">
-                      <Search size={16} />
-                    </Button>
-                  </div>
-                </form>
+                  <Search className="w-5 h-5 mr-4" style={{ color: colors.textMuted }} />
+                  <input
+                    type="text"
+                    placeholder="Search threats, content, or regions..."
+                    className="flex-1 bg-transparent outline-none text-lg"
+                    style={{ color: colors.text }}
+                  />
+                  <Button variant="primary" size="sm" className="ml-2">
+                    <Search size={16} />
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -227,20 +210,20 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
               <Button 
                 variant="primary" 
                 size="lg" 
-                onClick={() => navigate('/report')}
+                onClick={() => onAuthClick('login')}
                 className="px-8 py-4 text-lg font-semibold"
               >
                 <Eye className="w-6 h-6 mr-3" />
-                Report Threat
+                Login
               </Button>
               <Button 
                 variant="secondary" 
                 size="lg" 
-                onClick={() => navigate('/image-detection')}
+                onClick={() => onAuthClick('login')}
                 className="px-8 py-4 text-lg"
               >
                 <UserPlus className="w-6 h-6 mr-3" />
-                Image Analysis
+                Login
               </Button>
             </div>
 
@@ -288,8 +271,9 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card 
-              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden" 
+              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden cursor-pointer" 
               glow
+              onClick={() => navigate('/dashboard')}
             >
               <div className="absolute inset-0 bg-gradient-to-br opacity-5" style={{ background: colors.gradientPrimary }} />
               <div 
@@ -306,8 +290,9 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
             </Card>
 
             <Card 
-              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden" 
+              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden cursor-pointer" 
               glow
+              onClick={() => navigate('/geographic-intel')}
             >
               <div className="absolute inset-0 bg-gradient-to-br opacity-5" style={{ background: colors.gradientSecondary }} />
               <div 
@@ -324,8 +309,9 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
             </Card>
 
             <Card 
-              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden" 
+              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden cursor-pointer" 
               glow
+              onClick={() => navigate('/live-monitoring')}
             >
               <div className="absolute inset-0 bg-gradient-to-br opacity-5" style={{ background: colors.gradientSuccess }} />
               <div 
@@ -342,8 +328,9 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
             </Card>
 
             <Card 
-              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden" 
+              className="p-8 text-center transition-all duration-300 hover:scale-105 relative overflow-hidden cursor-pointer" 
               glow
+              onClick={() => navigate('/dashboard')}
             >
               <div className="absolute inset-0 bg-gradient-to-br opacity-5" style={{ background: colors.gradientDanger }} />
               <div 
@@ -639,6 +626,93 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
 
 
 
+        {/* Model Testing Demo Section */}
+        <div className="py-20">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-6" style={{ color: colors.text }}>
+              🚀 Try Our AI Model Live!
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: colors.textSecondary }}>
+              Experience the power of our hate speech detection AI in real-time. Test it with your own text content.
+            </p>
+          </div>
+
+          <Card className="p-12 relative overflow-hidden max-w-4xl mx-auto" glow>
+            <div className="absolute inset-0 bg-gradient-to-r opacity-5" style={{ background: colors.gradientPrimary }} />
+            <div className="relative z-10 text-center">
+              <div 
+                className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+                style={{ backgroundColor: colors.bgTertiary }}
+              >
+                <Brain className="w-10 h-10" style={{ color: colors.primary }} />
+              </div>
+              
+              <h3 className="text-3xl font-bold mb-4" style={{ color: colors.text }}>
+                Hate Speech Detection Demo
+              </h3>
+              
+              <p className="text-lg mb-8 max-w-2xl mx-auto" style={{ color: colors.textSecondary }}>
+                Our AI model analyzes text content and provides detailed insights including confidence scores, 
+                severity levels, and detected keywords. Perfect for demonstrating our technology's capabilities.
+              </p>
+
+              <div className="grid md:grid-cols-3 gap-6 mb-8 text-left">
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: colors.bgSecondary }}>
+                    <Target className="w-6 h-6" style={{ color: colors.primary }} />
+                  </div>
+                  <h4 className="font-semibold mb-2" style={{ color: colors.text }}>Real-time Analysis</h4>
+                  <p className="text-sm" style={{ color: colors.textSecondary }}>
+                    Instant results with processing times under 5ms
+                  </p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: colors.bgSecondary }}>
+                    <Zap className="w-6 h-6" style={{ color: colors.warning }} />
+                  </div>
+                  <h4 className="font-semibold mb-2" style={{ color: colors.text }}>High Accuracy</h4>
+                  <p className="text-sm" style={{ color: colors.textSecondary }}>
+                    94.2% accuracy rate across multiple languages
+                  </p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: colors.bgSecondary }}>
+                    <Shield className="w-6 h-6" style={{ color: colors.success }} />
+                  </div>
+                  <h4 className="font-semibold mb-2" style={{ color: colors.text }}>Detailed Insights</h4>
+                  <p className="text-sm" style={{ color: colors.textSecondary }}>
+                    Confidence scores, severity levels, and explanations
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  variant="primary" 
+                  size="lg" 
+                  onClick={() => navigate('/model-testing')}
+                  className="px-10 py-5 text-lg font-semibold"
+                >
+                  <Brain className="w-6 h-6 mr-3" />
+                  Test the Model Now
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  onClick={() => onDemoClick()}
+                  className="px-10 py-5 text-lg font-semibold"
+                >
+                  <Eye className="w-6 h-6 mr-3" />
+                  View Dashboard
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+
         {/* CTA Section */}
         <div className="py-20 text-center">
           <Card className="p-12 relative overflow-hidden" glow>
@@ -654,11 +728,11 @@ const LandingPage = ({ onAuthClick, onDemoClick }) => {
                 <Button 
                   variant="primary" 
                   size="lg" 
-                  onClick={() => navigate('/sui-learn')}
+                  onClick={() => onAuthClick('login')}
                   className="px-10 py-5 text-lg font-semibold"
                 >
                   <Eye className="w-6 h-6 mr-3" />
-                  View Tips 
+                  Login
                 </Button>
               </div>
             </div>

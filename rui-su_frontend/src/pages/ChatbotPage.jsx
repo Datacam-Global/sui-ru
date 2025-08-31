@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { MessageSquare, Brain, Clock, Shield } from 'lucide-react';
-import Card from '../ui/Card';
-import Button from '../ui/Button';
-import axiosInstance from '../../axiosInstance';
-import { useLocation } from 'react-router-dom';
+import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
+import axiosInstance from '../axiosInstance';
 
 const ChatbotPage = () => {
   const { colors } = useTheme();
-  const location = useLocation();
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -19,17 +17,14 @@ const ChatbotPage = () => {
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  
-  // Memoize handleSendMessage function to avoid infinite loops in useEffect
-  const handleSendMessage = useCallback(async (initialMessage = null) => {
-    const messageToSend = initialMessage || inputMessage;
-    
-    if (!messageToSend.trim()) return;
+
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim()) return;
 
     const userMessage = {
       id: messages.length + 1,
       type: 'user',
-      content: messageToSend,
+      content: inputMessage,
       timestamp: new Date()
     };
 
@@ -38,7 +33,7 @@ const ChatbotPage = () => {
     setIsTyping(true);
 
     try {
-      const response = await axiosInstance.post('/api/azure-openai/ask/', { question: messageToSend });
+      const response = await axiosInstance.post('/api/azure-openai/ask/', { question: inputMessage });
       const botResponse = {
         id: messages.length + 2,
         type: 'bot',
@@ -56,21 +51,7 @@ const ChatbotPage = () => {
     } finally {
       setIsTyping(false);
     }
-  }, [messages, inputMessage]);
-  
-  // Parse query parameters and automatically send initial message if a query is provided
-  useEffect(() => {
-    const query = new URLSearchParams(location.search).get('query');
-    if (query) {
-      setInputMessage(query);
-      // Automatically send the message after a short delay to allow the UI to render
-      const timer = setTimeout(() => {
-        handleSendMessage(query);
-      }, 500);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [location.search, handleSendMessage]);
+  };
 
   return (
     <div className="pt-20 min-h-screen" style={{ backgroundColor: colors.bg }}>
@@ -141,7 +122,7 @@ const ChatbotPage = () => {
                   color: colors.text
                 }}
               />
-              <Button variant="primary" onClick={() => handleSendMessage()}>
+              <Button variant="primary" onClick={handleSendMessage}>
                 <MessageSquare className="w-4 h-4" />
               </Button>
             </div>
@@ -176,3 +157,5 @@ const ChatbotPage = () => {
   );
 };
 export default ChatbotPage;
+
+

@@ -1,30 +1,33 @@
 import React, { useState } from 'react';
-import { ThemeProvider, useTheme } from './components/contexts/ThemeContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import PageLoader from './components/common/PageLoader';
 import Navbar from './components/layout/Navbar';
 import MobileMenu from './components/layout/MobileMenu';
-import LandingPage from './components/pages/LandingPage';
+import LandingPage from './pages/LandingPage';
 import AuthPage from './components/authPage/AuthPage';
-import ExecutiveDashboard from './components/dashboard/ExecutiveDashboard';
-import AboutPage from './components/pages/AboutPage';
-import FAQPage from './components/pages/FAQPage';
-import ChatbotPage from './components/pages/ChatbotPage';
-import ImageDetectionPage from './components/pages/ImageDetectionPage';
-import ReportPage from './components/pages/ReportPage';
-import ContactPage from './components/pages/ContactPage';
-import SUILearnPage from './components/pages/SUILearnPage';
-import MarketingPage from './components/pages/MarketingPage';
-import BlogPage from './components/pages/BlogPage';
-import NewsPage from './components/pages/NewsPage';
-import HelpCenterPage from './components/pages/HelpCenterPage';
+import ExecutiveDashboard from './dashboard/ExecutiveDashboard';
+import AboutPage from './pages/AboutPage';
+import FAQPage from './pages/FAQPage';
+import ChatbotPage from './pages/ChatbotPage';
+import ImageDetectionPage from './pages/ImageDetectionPage';
+import ModelTestingPage from './pages/ModelTestingPage';
+import ReportPage from './pages/ReportPage';
+import ContactPage from './pages/ContactPage';
+import SUILearnPage from './pages/SUILearnPage';
+import MarketingPage from './pages/MarketingPage';
+import BlogPage from './pages/BlogPage';
+import NewsPage from './pages/NewsPage';
+import HelpCenterPage from './pages/HelpCenterPage';
+import ContentQueuePage from './pages/ContentQueuePage';
+import EmergencyProceduresPage from './pages/EmergencyProceduresPage';
 import ChatbotOverlay from './components/common/ChatbotOverlay'; 
 import PublicRoute from './PublicRoutes';
 import PrivateRoutes from './PrivateRoutes';
-import AlertManagementPage from './components/dashboard/AlertManagementPage';
-import PlatformAnalysisPage from './components/dashboard/PlatformAnalysisPage';
+import AlertManagementPage from './dashboard/AlertManagementPage';
+import PlatformAnalysisPage from './dashboard/PlatformAnalysisPage';
 import { AuthContext } from './AuthProvider';
-import AnalystWorkstation from './components/dashboard/AnalystWorkstation';
+import AnalystWorkstation from './components/analystWorkstation/AnalystWorkstation';
 
 
 function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
@@ -57,6 +60,13 @@ function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
     }, 1000);
   };
 
+  const handleAnalystClick = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      navigate('/analyst');
+      setIsLoading(false);
+    }, 500);
+  };
 
   const handleLogout = () => {
     setIsLoading(true);
@@ -137,6 +147,7 @@ function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
         <Route path="/faq" element={<FAQPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/image-detection" element={<ImageDetectionPage />} />
+        <Route path="/model-testing" element={<ModelTestingPage />} />
         <Route path="/chatbot" element={<ChatbotPage />} />
         <Route path="/report" element={<ReportPage />} />
         <Route path="/sui-learn" element={<SUILearnPage />} />
@@ -146,12 +157,14 @@ function AppRoutes({ user, setUser, isLoading, setIsLoading }) {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/news" element={<NewsPage />} />
         <Route path="/help" element={<HelpCenterPage />} />
+        <Route path="/emergency-procedures" element={<EmergencyProceduresPage />} />
         {/* Private routes */}
         <Route path="/alert-management" element={<PrivateRoutes><AlertManagementPage /></PrivateRoutes>} />
-        <Route path="/dashboard" element={<PrivateRoutes><ExecutiveDashboard user={user} onLogout={handleLogout} /></PrivateRoutes>} />
+        <Route path="/dashboard" element={<PrivateRoutes><ExecutiveDashboard user={user} onLogout={handleLogout} onAnalystClick={handleAnalystClick} /></PrivateRoutes>} />
+        <Route path="/content-queue" element={<PrivateRoutes><ContentQueuePage /></PrivateRoutes>} />
         <Route path="/platform-analysis" element={<PrivateRoutes><PlatformAnalysisPage /></PrivateRoutes>} />
         <Route path="/reports" element={<PrivateRoutes><ReportPage /></PrivateRoutes>} />
-        <Route path="/analyst" element={<PrivateRoutes><AnalystWorkstation/></PrivateRoutes>} />
+        <Route path="/analyst" element={<PrivateRoutes><AnalystWorkstation onLogout={handleLogout} /></PrivateRoutes>} />
       </Routes>
       <ChatbotOverlay />
     </div>

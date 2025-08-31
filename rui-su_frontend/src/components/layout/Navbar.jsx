@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Shield, Menu, X, Home, MessageSquare, Camera, Phone, ChevronDown, Brain, GraduationCap, FileText, HelpCircle, Building2 } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import Button from '../ui/Button';
 import ThemeToggle from '../common/ThemeToggle';
 import { AuthContext } from '../../AuthProvider';
@@ -69,6 +69,12 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
 
   const servicesItems = [
     {
+      title: "Model Testing",
+      description: "Test our hate speech detection AI",
+      path: "/model-testing",
+      icon: Brain
+    },
+    {
       title: "Image Detection AI",
       description: "Advanced AI-powered image analysis",
       path: "/image-detection",
@@ -101,7 +107,7 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
     {
       title: "Blog & News",
       description: "Latest updates and insights",
-      path: "/blog",
+      path: "/news",
       icon: FileText
     },
     {
@@ -171,7 +177,7 @@ const Navbar = ({ handleLogout, handleAuthClick, navigateWithLoading, isMobileMe
               className="text-sm font-medium hover:scale-105 transition-transform"
             >
               <GraduationCap className="w-4 h-4 mr-1" />
-              Learn
+              Tips
             </Button>
 
             <DropdownMenu

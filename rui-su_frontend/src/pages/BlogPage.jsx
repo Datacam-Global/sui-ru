@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Calendar, User, ArrowRight, TrendingUp, Shield, Brain, Globe, MessageSquare, BarChart3, Search, Loader2 } from 'lucide-react';
-import Button from '../ui/Button';
-import Card from '../ui/Card';
-import { blogService } from '../../services/apiService';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import { blogService } from '../services/apiService';
 
 const BlogPage = () => {
   const { colors } = useTheme();
@@ -19,17 +19,30 @@ const BlogPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [email, setEmail] = useState('');
 
-  // Load initial data
-  useEffect(() => {
-    loadInitialData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const loadBlogPosts = useCallback(async () => {
+    setPostsLoading(true);
+    try {
+      const result = await blogService.getBlogPosts(
+        currentPage, 
+        6, 
+        selectedCategory === 'all' ? null : selectedCategory
+      );
 
-  // Load posts when category or page changes
-  useEffect(() => {
-    loadBlogPosts();
-  }, [currentPage, selectedCategory]); // eslint-disable-line react-hooks/exhaustive-deps
+      if (result.success) {
+        setBlogPosts(result.posts);
+        setTotalPages(result.totalPages);
+      } else {
+        setError(result.error || 'Failed to load blog posts');
+      }
+    } catch (err) {
+      setError('Failed to load blog posts');
+      console.error('Error loading blog posts:', err);
+    } finally {
+      setPostsLoading(false);
+    }
+  }, [currentPage, selectedCategory]);
 
-  const loadInitialData = async () => {
+  const loadInitialData = useCallback(async () => {
     setLoading(true);
     try {
       const [featuredResult, categoriesResult] = await Promise.all([
@@ -52,30 +65,15 @@ const BlogPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [loadBlogPosts]);
 
-  const loadBlogPosts = async () => {
-    setPostsLoading(true);
-    try {
-      const result = await blogService.getBlogPosts(
-        currentPage, 
-        6, 
-        selectedCategory === 'all' ? null : selectedCategory
-      );
+  useEffect(() => {
+    loadInitialData();
+  }, [loadInitialData]);
 
-      if (result.success) {
-        setBlogPosts(result.posts);
-        setTotalPages(result.totalPages);
-      } else {
-        setError(result.error || 'Failed to load blog posts');
-      }
-    } catch (err) {
-      setError('Failed to load blog posts');
-      console.error('Error loading blog posts:', err);
-    } finally {
-      setPostsLoading(false);
-    }
-  };
+  useEffect(() => {
+    loadBlogPosts();
+  }, [loadBlogPosts]);
 
   const handleSearch = async (e) => {
     e.preventDefault();

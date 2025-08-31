@@ -13,12 +13,9 @@ const axiosInstance = axios.create({
 // Request interceptor to attach access token
 axiosInstance.interceptors.request.use(
     (config) => {
-        // Only attach Authorization if not explicitly skipped
-        if (!config.skipAuth) {
-            const accessToken = localStorage.getItem('accessToken');
-            if (accessToken) {
-                config.headers['Authorization'] = `Bearer ${accessToken}`;
-            }
+        const accessToken = localStorage.getItem('accessToken');
+        if (accessToken) {
+            config.headers['Authorization'] = `Bearer ${accessToken}`;
         }
         return config;
     },

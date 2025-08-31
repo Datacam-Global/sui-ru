@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
-import Card from '../ui/Card';
-import Button from '../ui/Button';
-import Badge from '../ui/Badge';
+import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
+import Badge from '../components/ui/Badge';
 import { Line, AreaChart, Area, PieChart as RechartsPieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart } from 'recharts';
-import { Users, AlertTriangle, TrendingUp, Search, Settings, Calendar, MapPin, Activity, Database, FileText, Play, Pause, Download, BarChart3, Network, Target, Clock, Wifi, ExternalLink, Map, CheckCircle, ArrowUp, Plus, Filter} from 'lucide-react';
+import { Users, AlertTriangle, TrendingUp, Search, Settings, Calendar, MapPin, Activity, Database, FileText, Play, Pause, Download, BarChart3, Network, Target, Clock, Wifi, CheckCircle, ArrowUp, Plus, Filter, Map } from 'lucide-react';
 import SideNavigation from './SideNavigation';
 import ReportsPage from './ReportsPage';
 import SettingsPage from '../pages/SettingsPage';
 import PlatformAnalysisPage from './PlatformAnalysisPage'
-import InteractiveMap from '../../InteractiveMapLeaflet';
-import AnalystWorkstation from './AnalystWorkstation';
+import InteractiveMap from '../InteractiveMapLeaflet';
 
 const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
   const { colors } = useTheme();
@@ -185,9 +184,6 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
                 >
                   {alert.status}
                 </Badge>
-                <Button variant="ghost" size="sm">
-                  <ExternalLink size={14} />
-                </Button>
               </div>
             </div>
           </div>
@@ -196,74 +192,56 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
     </Card>
   );
 
-  const GeographicIntelligence = React.memo(() => {
-    // Use a stable theme object that doesn't change
-    const stableTheme = {
-      primary: '#3b82f6',
-      secondary: '#1e40af',
-      accent: '#f59e0b',
-      background: '#1f2937',
-      surface: '#374151',
-      text: '#f9fafb',
-      textSecondary: '#d1d5db',
-      textMuted: '#9ca3af',
-      border: '#4b5563',
-      success: '#10b981',
-      warning: '#f59e0b',
-      error: '#ef4444'
-    };
-    
-    return (
-      <div className="space-y-6">
-        <Card className="p-6">
-          <h3 className="text-xl font-semibold mb-6 flex items-center gap-2" style={{ color: colors.text }}>
-            <Map className="w-5 h-5" style={{ color: colors.secondary }} />
-            Interactive Threat Map
-          </h3>
-          
-          <div className="mb-6">
-            <InteractiveMap key="stable-map" theme={stableTheme} />
-          </div>
-        </Card>
+  const GeographicIntelligence = () => (
+    <div className="space-y-6">
+      <Card className="p-6">
+        <h3 className="text-xl font-semibold mb-6 flex items-center gap-2" style={{ color: colors.text }}>
+          <Map className="w-5 h-5" style={{ color: colors.secondary }} />
+          Interactive Threat Map
+        </h3>
         
-        <Card className="p-6">
-          <h3 className="text-xl font-semibold mb-6 flex items-center gap-2" style={{ color: colors.text }}>
-            <Map className="w-5 h-5" style={{ color: colors.secondary }} />
-            Regional Intelligence
-          </h3>
-          
-          <div className="space-y-4">
-            {geographicData.map((region, index) => (
-              <div 
-                key={region.region} 
-                className="flex items-center justify-between p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]"
-                style={{ backgroundColor: colors.bgTertiary }}
-              >
-                <div className="flex items-center gap-3">
-                  <div 
-                    className="w-3 h-3 rounded-full"
-                    style={{ 
-                      backgroundColor: region.severity === 'high' ? colors.danger :
-                                       region.severity === 'medium' ? colors.warning : colors.success
-                    }}
-                  ></div>
-                  <div>
-                    <div className="font-medium" style={{ color: colors.text }}>{region.region}</div>
-                    <div className="text-sm" style={{ color: colors.textSecondary }}>{region.population}M population</div>
-                  </div>
-                </div>
-                
-                <div className="text-right">
-                  <div className="font-bold" style={{ color: colors.text }}>{region.threats}</div>
-                  <div className="text-xs" style={{ color: colors.textMuted }}>active threats</div>
+        <div className="mb-6">
+          <InteractiveMap theme={colors} />
+        </div>
+      </Card>
+      
+      <Card className="p-6">
+        <h3 className="text-xl font-semibold mb-6 flex items-center gap-2" style={{ color: colors.text }}>
+          <Map className="w-5 h-5" style={{ color: colors.secondary }} />
+          Regional Intelligence
+        </h3>
+        
+        <div className="space-y-4">
+          {geographicData.map((region, index) => (
+            <div 
+              key={region.region} 
+              className="flex items-center justify-between p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]"
+              style={{ backgroundColor: colors.bgTertiary }}
+            >
+              <div className="flex items-center gap-3">
+                <div 
+                  className="w-3 h-3 rounded-full"
+                  style={{ 
+                    backgroundColor: region.severity === 'high' ? colors.danger :
+                                     region.severity === 'medium' ? colors.warning : colors.success
+                  }}
+                ></div>
+                <div>
+                  <div className="font-medium" style={{ color: colors.text }}>{region.region}</div>
+                  <div className="text-sm" style={{ color: colors.textSecondary }}>{region.population}M population</div>
                 </div>
               </div>
-            ))}
-          </div>
-        </Card>
-      </div>
-    );
-  });
+              
+              <div className="text-right">
+                <div className="font-bold" style={{ color: colors.text }}>{region.threats}</div>
+                <div className="text-xs" style={{ color: colors.textMuted }}>active threats</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
 
   const renderTabContent = () => {
     switch(activeTab) {
@@ -273,12 +251,13 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <Card 
-                className="p-6 transition-all duration-300 hover:scale-105" 
+                className="p-6 transition-all duration-300 hover:scale-105 cursor-pointer" 
                 glow
                 style={{ 
                   background: `linear-gradient(135deg, ${colors.primary}20 0%, ${colors.primary}10 100%)`,
                   borderColor: `${colors.primary}30`
                 }}
+                onClick={() => navigate('/content-queue')}
               >
                 <div className="flex items-center justify-between">
                   <div>
@@ -300,12 +279,13 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
               </Card>
 
               <Card 
-                className="p-6 transition-all duration-300 hover:scale-105" 
+                className="p-6 transition-all duration-300 hover:scale-105 cursor-pointer" 
                 glow
                 style={{ 
                   background: `linear-gradient(135deg, ${colors.danger}20 0%, ${colors.danger}10 100%)`,
                   borderColor: `${colors.danger}30`
                 }}
+                onClick={() => setActiveTab('analytics')}
               >
                 <div className="flex items-center justify-between">
                   <div>
@@ -1327,9 +1307,6 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
           </div>
         );
       
-      case 'analyst':
-        return <AnalystWorkstation user={user} />;
-      
       case 'platforms':
         return <PlatformAnalysisPage />;
       
@@ -1398,7 +1375,7 @@ const ExecutiveDashboard = ({ user, onLogout, onAnalystClick }) => {
                 Last updated: {realTimeData.lastUpdate.toLocaleTimeString()}
               </div>
               
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" onClick={() => setActiveTab('settings')}>
                 <Settings size={16} />
               </Button>
             </div>
