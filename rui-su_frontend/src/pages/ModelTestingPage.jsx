@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
-import { Loader2, Send, AlertTriangle, CheckCircle, XCircle, Brain, Clock, Zap, Play, Pause, RefreshCw, Globe, MessageCircle, Heart, Share, Flag } from 'lucide-react';
+import { Loader2, Send, AlertTriangle, CheckCircle, XCircle, Brain, Clock, Zap, Play, Pause, RefreshCw, Globe, MessageCircle, Heart, Share, Flag, Download } from 'lucide-react';
 import { detectHateSpeech } from '../services/apiService';
 
 const ModelTestingPage = () => {
@@ -16,19 +16,27 @@ const ModelTestingPage = () => {
   const [socialMediaPosts, setSocialMediaPosts] = useState([]);
   const [simulationSpeed, setSimulationSpeed] = useState(3000); // 3 seconds between posts
   const [analyzedPosts, setAnalyzedPosts] = useState({});
+  const [simulationInterval, setSimulationInterval] = useState(null);
+  const [filteredPosts, setFilteredPosts] = useState([]);
+  const [filters, setFilters] = useState({
+    platform: 'all',
+    severity: 'all',
+    category: 'all',
+    searchText: ''
+  });
 
   // Mock social media posts data
   const mockSocialMediaPosts = [
     {
       id: 1,
-      content: "Just had the best coffee ever! ☕️ Love this community!",
+      content: "Just had the best ndolé ever! 🍲 Love this community in Douala!",
       poster: {
-        username: "coffee_lover_42",
-        displayName: "Sarah Johnson",
+        username: "douala_foodie_42",
+        displayName: "Sarah Abena",
         avatar: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E",
         verified: true,
         followers: 12400,
-        location: "Seattle, WA",
+        location: "Douala, Cameroon",
         joinDate: "2020-03-15"
       },
       platform: "Twitter",
@@ -42,14 +50,14 @@ const ModelTestingPage = () => {
     },
     {
       id: 2,
-      content: "All Muslims are terrorists and should be eliminated from our country. This is the truth!",
+      content: "All Anglophones are separatists and should be eliminated from our country! This is the truth!",
       poster: {
         username: "truth_seeker_88",
-        displayName: "John Smith",
+        displayName: "Jean Mbarga",
         avatar: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E",
         verified: false,
         followers: 1200,
-        location: "Unknown",
+        location: "Yaoundé, Cameroon",
         joinDate: "2023-08-22"
       },
       platform: "Twitter",
@@ -63,14 +71,14 @@ const ModelTestingPage = () => {
     },
     {
       id: 3,
-      content: "BREAKING: Scientists discover that drinking hot water with lemon cures cancer in 24 hours! Share this with everyone you know!",
+      content: "BREAKING: Scientists discover that drinking hot water with bitter leaf cures HIV in 24 hours! Share this with everyone you know!",
       poster: {
         username: "health_guru_2024",
-        displayName: "Dr. Wellness",
+        displayName: "Dr. Nkem",
         avatar: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E",
         verified: false,
         followers: 8900,
-        location: "Los Angeles, CA",
+        location: "Bamenda, Cameroon",
         joinDate: "2022-11-10"
       },
       platform: "Facebook",
@@ -87,11 +95,11 @@ const ModelTestingPage = () => {
       content: "Happy birthday to my amazing sister! 🎉 You're the best person I know and I'm so lucky to have you in my life!",
       poster: {
         username: "sister_love_99",
-        displayName: "Emma Wilson",
+        displayName: "Emma Fon",
         avatar: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E",
         verified: true,
         followers: 5600,
-        location: "Austin, TX",
+        location: "Buea, Cameroon",
         joinDate: "2019-06-12"
       },
       platform: "Instagram",
@@ -105,14 +113,14 @@ const ModelTestingPage = () => {
     },
     {
       id: 5,
-      content: "The government is hiding aliens in Area 51 and they're controlling our minds with 5G! Wake up sheeple!",
+      content: "The government is hiding oil money in Swiss banks and they're controlling our minds with witchcraft! Wake up Cameroonians!",
       poster: {
         username: "truth_bringer_777",
-        displayName: "Mike Conspiracy",
+        displayName: "Mike Ngu",
         avatar: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E",
         verified: false,
         followers: 3400,
-        location: "Phoenix, AZ",
+        location: "Kribi, Cameroon",
         joinDate: "2021-04-18"
       },
       platform: "Twitter",
@@ -126,14 +134,14 @@ const ModelTestingPage = () => {
     },
     {
       id: 6,
-      content: "We need to kill all the liberals and take back our country! No more mercy!",
+      content: "We need to kill all the Bamileke people and take back our country! No more mercy!",
       poster: {
         username: "patriot_warrior",
-        displayName: "Robert Strong",
+        displayName: "Robert Ndi",
         avatar: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E",
         verified: false,
         followers: 2100,
-        location: "Unknown",
+        location: "Garoua, Cameroon",
         joinDate: "2023-12-01"
       },
       platform: "Facebook",
@@ -147,14 +155,14 @@ const ModelTestingPage = () => {
     },
     {
       id: 7,
-      content: "Just finished reading an amazing book about climate change solutions. We can make a difference together! 🌱",
+      content: "Just finished reading an amazing book about climate change solutions for the Sahel region. We can make a difference together! 🌱",
       poster: {
         username: "eco_warrior_2024",
-        displayName: "Lisa Chen",
+        displayName: "Lisa Tchokouani",
         avatar: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E",
         verified: true,
         followers: 7800,
-        location: "Portland, OR",
+        location: "Maroua, Cameroon",
         joinDate: "2021-02-14"
       },
       platform: "LinkedIn",
@@ -168,14 +176,14 @@ const ModelTestingPage = () => {
     },
     {
       id: 8,
-      content: "All Jews control the media and banks! They're plotting against us!",
+      content: "All Fulani people control the cattle trade and banks! They're plotting against us!",
       poster: {
         username: "real_truth_999",
         displayName: "Anonymous User",
         avatar: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E",
         verified: false,
         followers: 450,
-        location: "Unknown",
+        location: "Ngaoundéré, Cameroon",
         joinDate: "2024-01-15"
       },
       platform: "Twitter",
@@ -189,14 +197,14 @@ const ModelTestingPage = () => {
     },
     {
       id: 9,
-      content: "Amazing sunset tonight! Nature is truly beautiful and healing. Grateful for moments like this ✨",
+      content: "Amazing sunset over Mount Cameroon tonight! Nature is truly beautiful and healing. Grateful for moments like this ✨",
       poster: {
         username: "nature_lover_88",
-        displayName: "David Park",
+        displayName: "David Manga",
         avatar: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E",
         verified: false,
         followers: 3200,
-        location: "Denver, CO",
+        location: "Limbe, Cameroon",
         joinDate: "2020-09-22"
       },
       platform: "Instagram",
@@ -210,14 +218,14 @@ const ModelTestingPage = () => {
     },
     {
       id: 10,
-      content: "The deep state is using vaccines to implant microchips! Don't trust the mainstream media!",
+      content: "The deep state is using traditional healers to implant microchips! Don't trust the mainstream media!",
       poster: {
         username: "freedom_fighter_2024",
-        displayName: "Patricia Liberty",
+        displayName: "Patricia Nguemo",
         avatar: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E",
         verified: false,
         followers: 1800,
-        location: "Nashville, TN",
+        location: "Bertoua, Cameroon",
         joinDate: "2023-05-10"
       },
       platform: "Facebook",
@@ -237,22 +245,42 @@ const ModelTestingPage = () => {
     setSocialMediaPosts([]);
     setAnalyzedPosts({});
     
-    // Add posts one by one with delays
-    mockSocialMediaPosts.forEach((post, index) => {
+    // Clear any existing interval
+    if (simulationInterval) {
+      clearInterval(simulationInterval);
+    }
+    
+    // Create new interval for progressive post addition
+    let postIndex = 0;
+    const interval = setInterval(() => {
+      if (postIndex >= mockSocialMediaPosts.length) {
+        // All posts have been added, stop the simulation
+        setIsSimulationRunning(false);
+        clearInterval(interval);
+        return;
+      }
+      
+      const post = mockSocialMediaPosts[postIndex];
+      setSocialMediaPosts(prev => [post, ...prev]);
+      
+      // Automatically analyze the post after it appears
       setTimeout(() => {
-        setSocialMediaPosts(prev => [post, ...prev]);
-        
-        // Automatically analyze the post after it appears
-        setTimeout(() => {
-          analyzePost(post);
-        }, 1000); // Analyze 1 second after post appears
-      }, index * simulationSpeed);
-    });
+        analyzePost(post);
+      }, 1000);
+      
+      postIndex++;
+    }, simulationSpeed);
+    
+    setSimulationInterval(interval);
   };
 
   // Stop simulation
   const stopSimulation = () => {
     setIsSimulationRunning(false);
+    if (simulationInterval) {
+      clearInterval(simulationInterval);
+      setSimulationInterval(null);
+    }
   };
 
   // Reset simulation
@@ -260,6 +288,82 @@ const ModelTestingPage = () => {
     setIsSimulationRunning(false);
     setSocialMediaPosts([]);
     setAnalyzedPosts({});
+    if (simulationInterval) {
+      clearInterval(simulationInterval);
+      setSimulationInterval(null);
+    }
+  };
+
+  // Apply filters to posts
+  const applyFilters = useCallback(() => {
+    let filtered = socialMediaPosts;
+    
+    if (filters.platform !== 'all') {
+      filtered = filtered.filter(post => post.platform === filters.platform);
+    }
+    
+    if (filters.severity !== 'all') {
+      filtered = filtered.filter(post => {
+        const analysis = analyzedPosts[post.id];
+        return analysis && analysis.severity === filters.severity;
+      });
+    }
+    
+    if (filters.category !== 'all') {
+      filtered = filtered.filter(post => post.category === filters.category);
+    }
+    
+    if (filters.searchText) {
+      filtered = filtered.filter(post => 
+        post.content.toLowerCase().includes(filters.searchText.toLowerCase()) ||
+        post.poster.displayName.toLowerCase().includes(filters.searchText.toLowerCase()) ||
+        post.poster.username.toLowerCase().includes(filters.searchText.toLowerCase())
+      );
+    }
+    
+    setFilteredPosts(filtered);
+  }, [filters, socialMediaPosts, analyzedPosts]);
+
+  // Update filters and apply
+  const updateFilters = (newFilters) => {
+    setFilters(prev => ({ ...prev, ...newFilters }));
+  };
+
+  // Apply filters whenever filters or posts change
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
+
+  // Initialize filtered posts when social media posts change
+  useEffect(() => {
+    setFilteredPosts(socialMediaPosts);
+  }, [socialMediaPosts]);
+
+  // Download results as JSON
+  const downloadResults = () => {
+    const results = {
+      simulation_info: {
+        total_posts: socialMediaPosts.length,
+        analyzed_posts: Object.keys(analyzedPosts).length,
+        simulation_duration: `${Math.ceil(socialMediaPosts.length * simulationSpeed / 1000)}s`,
+        timestamp: new Date().toISOString()
+      },
+      posts: socialMediaPosts.map(post => ({
+        ...post,
+        analysis: analyzedPosts[post.id] || null
+      })),
+      filters_applied: filters
+    };
+    
+    const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hate_speech_analysis_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   // Analyze a single post
@@ -392,6 +496,16 @@ const ModelTestingPage = () => {
               Reset
             </Button>
             
+            <Button 
+              variant="outline" 
+              onClick={downloadResults}
+              disabled={socialMediaPosts.length === 0}
+              className="flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Download Results
+            </Button>
+            
             <div className="flex items-center gap-2">
               <span className="text-sm" style={{ color: colors.textSecondary }}>Speed:</span>
               <select 
@@ -405,8 +519,10 @@ const ModelTestingPage = () => {
                 }}
               >
                 <option value={1000}>Fast (1s)</option>
-                <option value={3000}>Normal (3s)</option>
-                <option value={5000}>Slow (5s)</option>
+                <option value={2000}>Normal (2s)</option>
+                <option value={3000}>Slow (3s)</option>
+                <option value={5000}>Very Slow (5s)</option>
+                <option value={10000}>Super Slow (10s)</option>
               </select>
             </div>
           </div>
@@ -462,9 +578,119 @@ const ModelTestingPage = () => {
                 </div>
               </Card>
             </div>
+
+            {/* Filtering Controls */}
+            <Card className="p-4 mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-medium" style={{ color: colors.textSecondary }}>
+                  Filter Posts
+                </h4>
+                <div className="flex items-center gap-2">
+                  {Object.values(filters).some(filter => filter !== 'all' && filter !== '') && (
+                    <Badge variant="secondary" size="sm">
+                      Filters Active
+                    </Badge>
+                  )}
+                  <div className="text-sm" style={{ color: colors.textSecondary }}>
+                    Showing {filteredPosts.length} of {socialMediaPosts.length} posts
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div>
+                  <label className="block text-xs mb-1" style={{ color: colors.textSecondary }}>Platform</label>
+                  <select 
+                    value={filters.platform}
+                    onChange={(e) => updateFilters({ platform: e.target.value })}
+                    className="w-full px-2 py-1 text-sm border rounded"
+                    style={{ 
+                      backgroundColor: colors.bgSecondary,
+                      borderColor: colors.border,
+                      color: colors.text
+                    }}
+                  >
+                    <option value="all">All Platforms</option>
+                    <option value="Twitter">Twitter</option>
+                    <option value="Facebook">Facebook</option>
+                    <option value="Instagram">Instagram</option>
+                    <option value="LinkedIn">LinkedIn</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-xs mb-1" style={{ color: colors.textSecondary }}>Severity</label>
+                  <select 
+                    value={filters.severity}
+                    onChange={(e) => updateFilters({ severity: e.target.value })}
+                    className="w-full px-2 py-1 text-sm border rounded"
+                    style={{ 
+                      backgroundColor: colors.bgSecondary,
+                      borderColor: colors.border,
+                      color: colors.text
+                    }}
+                  >
+                    <option value="all">All Severities</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-xs mb-1" style={{ color: colors.textSecondary }}>Category</label>
+                  <select 
+                    value={filters.category}
+                    onChange={(e) => updateFilters({ category: e.target.value })}
+                    className="w-full px-2 py-1 text-sm border rounded"
+                    style={{ 
+                      backgroundColor: colors.bgSecondary,
+                      borderColor: colors.border,
+                      color: colors.text
+                    }}
+                  >
+                    <option value="all">All Categories</option>
+                    <option value="hate_speech">Hate Speech</option>
+                    <option value="misinformation">Misinformation</option>
+                    <option value="conspiracy">Conspiracy</option>
+                    <option value="positive">Positive</option>
+                  </select>
+                </div>
+                
+                <div className="md:col-span-2">
+                  <label className="block text-xs mb-1" style={{ color: colors.textSecondary }}>Search</label>
+                  <div className="flex gap-2">
+                    <input 
+                      type="text"
+                      placeholder="Search posts, users, or content..."
+                      value={filters.searchText}
+                      onChange={(e) => updateFilters({ searchText: e.target.value })}
+                      className="flex-1 px-2 py-1 text-sm border rounded"
+                      style={{ 
+                        backgroundColor: colors.bgSecondary,
+                        borderColor: colors.border,
+                        color: colors.text
+                      }}
+                    />
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setFilters({
+                        platform: 'all',
+                        severity: 'all',
+                        category: 'all',
+                        searchText: ''
+                      })}
+                      className="px-3 py-1"
+                    >
+                      Clear
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </Card>
             
             <div className="space-y-4">
-              {socialMediaPosts.map((post) => (
+              {(Object.values(filters).some(filter => filter !== 'all' && filter !== '') ? filteredPosts : socialMediaPosts).map((post) => (
                 <Card key={post.id} className="p-4">
                   <div className="flex items-start gap-3">
                     {/* Poster Avatar */}
@@ -562,8 +788,8 @@ const ModelTestingPage = () => {
                       {analyzedPosts[post.id] && (
                         <div className="mt-3 p-3 rounded-lg border-l-4" style={{ 
                           backgroundColor: colors.bgSecondary,
-                          borderLeftColor: analyzedPosts[post.id].is_hate_speech ? colors.error : 
-                                          analyzedPosts[post.id].is_misinformation ? colors.warning : colors.success
+                          borderLeftColor: analyzedPosts[post.id].severity === 'high' ? colors.error : 
+                                          analyzedPosts[post.id].severity === 'medium' ? colors.warning : colors.success
                         }}>
                           <div className="flex items-center justify-between mb-2">
                             <h4 className="text-sm font-medium" style={{ color: colors.text }}>
@@ -578,7 +804,17 @@ const ModelTestingPage = () => {
                             </div>
                           </div>
                           
-                          <div className="grid grid-cols-3 gap-2 text-xs">
+                          {/* Full Sentence Analysis */}
+                          <div className="mb-3 p-2 rounded" style={{ backgroundColor: colors.bg }}>
+                            <div className="text-xs mb-1" style={{ color: colors.textSecondary }}>
+                              Analyzed Content:
+                            </div>
+                            <p className="text-sm italic" style={{ color: colors.text }}>
+                              "{analyzedPosts[post.id].text}"
+                            </p>
+                          </div>
+                          
+                          <div className="grid grid-cols-3 gap-2 text-xs mb-3">
                             <div className="text-center">
                               <div className="font-bold" style={{ color: colors.primary }}>
                                 {(analyzedPosts[post.id].confidence * 100).toFixed(0)}%
@@ -586,7 +822,11 @@ const ModelTestingPage = () => {
                               <div style={{ color: colors.textSecondary }}>Confidence</div>
                             </div>
                             <div className="text-center">
-                              <div className="font-bold capitalize" style={{ color: colors.text }}>
+                              <div className="font-bold capitalize" style={{ 
+                                color: analyzedPosts[post.id].severity === 'high' ? colors.error :
+                                       analyzedPosts[post.id].severity === 'medium' ? colors.warning :
+                                       colors.success
+                              }}>
                                 {analyzedPosts[post.id].severity}
                               </div>
                               <div style={{ color: colors.textSecondary }}>Severity</div>
@@ -596,6 +836,25 @@ const ModelTestingPage = () => {
                                 {analyzedPosts[post.id].risk_score}
                               </div>
                               <div style={{ color: colors.textSecondary }}>Risk Score</div>
+                            </div>
+                          </div>
+                          
+                          {/* Severity Color Bar */}
+                          <div className="mb-3">
+                            <div className="text-xs mb-1" style={{ color: colors.textSecondary }}>
+                              Severity Level:
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div 
+                                className="h-2 rounded-full transition-all duration-300"
+                                style={{
+                                  width: analyzedPosts[post.id].severity === 'high' ? '100%' :
+                                         analyzedPosts[post.id].severity === 'medium' ? '66%' : '33%',
+                                  backgroundColor: analyzedPosts[post.id].severity === 'high' ? colors.error :
+                                                analyzedPosts[post.id].severity === 'medium' ? colors.warning :
+                                                colors.success
+                                }}
+                              ></div>
                             </div>
                           </div>
                           
@@ -611,6 +870,18 @@ const ModelTestingPage = () => {
                                   </Badge>
                                 ))}
                               </div>
+                            </div>
+                          )}
+                          
+                          {/* Explanation */}
+                          {analyzedPosts[post.id].explanation && (
+                            <div className="mt-2">
+                              <div className="text-xs mb-1" style={{ color: colors.textSecondary }}>
+                                Analysis Explanation:
+                              </div>
+                              <p className="text-xs" style={{ color: colors.text }}>
+                                {analyzedPosts[post.id].explanation}
+                              </p>
                             </div>
                           )}
                         </div>
@@ -631,6 +902,18 @@ const ModelTestingPage = () => {
                   </div>
                 </Card>
               ))}
+              
+              {/* No Results Message */}
+              {filteredPosts.length === 0 && socialMediaPosts.length > 0 && (
+                <Card className="p-8 text-center">
+                  <div className="text-lg font-medium mb-2" style={{ color: colors.text }}>
+                    No posts match your current filters
+                  </div>
+                  <p style={{ color: colors.textSecondary }}>
+                    Try adjusting your filter criteria or search terms
+                  </p>
+                </Card>
+              )}
             </div>
           </div>
         )}
@@ -693,10 +976,12 @@ const ModelTestingPage = () => {
               </h3>
               <div className="space-y-2">
                 {[
-                  "All Muslims are terrorists.",
-                  "I love this community and everyone in it!",
-                  "We should eliminate all people who disagree with us.",
-                  "Let's work together to build a better future."
+                  "All Anglophones are separatists and should be eliminated from our country.",
+                  "I love this community in Douala and everyone in it! Let's work together!",
+                  "The government is hiding oil money in Swiss banks and using witchcraft to control our minds!",
+                  "We need to kill all the Bamileke people and take back our country!",
+                  "Scientists discover that drinking hot water with bitter leaf cures HIV in 24 hours!",
+                  "Happy birthday to my amazing sister! You're the best person I know!"
                 ].map((sample, index) => (
                   <button
                     key={index}
@@ -754,6 +1039,52 @@ const ModelTestingPage = () => {
                     </div>
                   </div>
 
+                  {/* User Details Section */}
+                  <div className="mb-6 p-4 rounded-lg" style={{ backgroundColor: colors.bgSecondary }}>
+                    <h4 className="text-sm font-medium mb-3" style={{ color: colors.textSecondary }}>
+                      Test User Information
+                    </h4>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.primary }}>
+                        <span className="text-white font-semibold text-lg">TU</span>
+                      </div>
+                      <div>
+                        <div className="font-semibold" style={{ color: colors.text }}>
+                          Test User
+                        </div>
+                        <div className="text-sm" style={{ color: colors.textSecondary }}>
+                          @test_user_analysis
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span style={{ color: colors.textSecondary }}>Platform:</span>
+                        <span className="ml-2 font-medium" style={{ color: colors.text }}>
+                          Analysis Interface
+                        </span>
+                      </div>
+                      <div>
+                        <span style={{ color: colors.textSecondary }}>Content Type:</span>
+                        <span className="ml-2 font-medium" style={{ color: colors.text }}>
+                          Manual Input
+                        </span>
+                      </div>
+                      <div>
+                        <span style={{ color: colors.textSecondary }}>Analysis Time:</span>
+                        <span className="ml-2 font-medium" style={{ color: colors.text }}>
+                          {new Date(analysisResult.timestamp).toLocaleTimeString()}
+                        </span>
+                      </div>
+                      <div>
+                        <span style={{ color: colors.textSecondary }}>Model Version:</span>
+                        <span className="ml-2 font-medium" style={{ color: colors.text }}>
+                          {analysisResult.category}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Confidence and Severity */}
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="text-center p-3 rounded-lg" style={{ backgroundColor: colors.bgSecondary }}>
@@ -776,6 +1107,28 @@ const ModelTestingPage = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* Risk Score and Moderation Action */}
+                  {analysisResult.risk_score && (
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                      <div className="text-center p-3 rounded-lg" style={{ backgroundColor: colors.bgSecondary }}>
+                        <div className="text-2xl font-bold" style={{ color: colors.secondary }}>
+                          {analysisResult.risk_score}
+                        </div>
+                        <div className="text-sm" style={{ color: colors.textSecondary }}>
+                          Risk Score
+                        </div>
+                      </div>
+                      <div className="text-center p-3 rounded-lg" style={{ backgroundColor: colors.bgSecondary }}>
+                        <div className="text-lg font-semibold capitalize" style={{ color: colors.text }}>
+                          {analysisResult.moderation_action?.replace(/_/g, ' ') || 'No Action'}
+                        </div>
+                        <div className="text-sm" style={{ color: colors.textSecondary }}>
+                          Moderation Action
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Detected Keywords */}
                   {analysisResult.detected_keywords && analysisResult.detected_keywords.length > 0 && (
@@ -806,9 +1159,9 @@ const ModelTestingPage = () => {
                   {/* Technical Details */}
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span style={{ color: colors.textSecondary }}>Model:</span>
+                      <span style={{ color: colors.textSecondary }}>Language:</span>
                       <span className="ml-2 font-medium" style={{ color: colors.text }}>
-                        {analysisResult.category}
+                        {analysisResult.language || 'en'}
                       </span>
                     </div>
                     <div>
