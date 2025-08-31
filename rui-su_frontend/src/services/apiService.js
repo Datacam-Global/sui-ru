@@ -318,31 +318,80 @@ export const detectHateSpeech = async (text) => {
     // Mock response for demonstration
     await new Promise(resolve => setTimeout(resolve, 1000));
     
+    const lowerText = text.toLowerCase();
+    
+    // Enhanced detection logic
+    const hateSpeechKeywords = [
+      'hate', 'kill', 'eliminate', 'destroy', 'terrorist', 'muslim', 'jew', 'black', 'white', 'asian',
+      'gay', 'lesbian', 'trans', 'queer', 'faggot', 'nigger', 'spic', 'chink', 'kike', 'towelhead',
+      'liberal', 'conservative', 'democrat', 'republican', 'commie', 'nazi', 'fascist'
+    ];
+    
+    const violenceKeywords = [
+      'kill', 'murder', 'assassinate', 'bomb', 'shoot', 'attack', 'war', 'fight', 'destroy',
+      'eliminate', 'exterminate', 'wipe out', 'burn', 'hang', 'lynch'
+    ];
+    
+    const misinformationKeywords = [
+      'cure', 'miracle', 'secret', 'conspiracy', 'government hiding', 'wake up', 'sheeple',
+      'truth', 'real news', 'fake news', 'mainstream media', 'deep state'
+    ];
+    
+    const isHateSpeech = hateSpeechKeywords.some(keyword => lowerText.includes(keyword)) ||
+                         violenceKeywords.some(keyword => lowerText.includes(keyword));
+    
+    const isMisinformation = misinformationKeywords.some(keyword => lowerText.includes(keyword));
+    
+    // Determine severity based on content
+    let severity = 'low';
+    if (violenceKeywords.some(keyword => lowerText.includes(keyword))) {
+      severity = 'high';
+    } else if (hateSpeechKeywords.some(keyword => lowerText.includes(keyword))) {
+      severity = 'medium';
+    }
+    
+    // Calculate confidence based on keyword matches
+    const keywordMatches = [...hateSpeechKeywords, ...violenceKeywords, ...misinformationKeywords]
+      .filter(keyword => lowerText.includes(keyword)).length;
+    const confidence = Math.min(0.95, 0.6 + (keywordMatches * 0.1));
+    
+    // Generate explanation based on detected content
+    let explanation = "Content appears safe based on analysis.";
+    if (isHateSpeech && isMisinformation) {
+      explanation = "Content contains both hate speech and misinformation elements. Multiple concerning patterns detected including discriminatory language and false claims.";
+    } else if (isHateSpeech) {
+      explanation = "Content contains hate speech elements including discriminatory language, threats, or calls for violence.";
+    } else if (isMisinformation) {
+      explanation = "Content appears to contain misinformation or conspiracy theories that could mislead readers.";
+    }
+    
+    // Detect specific keywords for display
+    const detectedKeywords = [];
+    hateSpeechKeywords.forEach(keyword => {
+      if (lowerText.includes(keyword)) detectedKeywords.push(keyword);
+    });
+    violenceKeywords.forEach(keyword => {
+      if (lowerText.includes(keyword)) detectedKeywords.push(keyword);
+    });
+    misinformationKeywords.forEach(keyword => {
+      if (lowerText.includes(keyword)) detectedKeywords.push(keyword);
+    });
+    
     const mockResponse = {
       text: text,
-      is_hate_speech: text.toLowerCase().includes('hate') || 
-                      text.toLowerCase().includes('terrorist') || 
-                      text.toLowerCase().includes('kill') ||
-                      text.toLowerCase().includes('eliminate'),
-      confidence: Math.random() * 0.4 + 0.6, // Random confidence between 0.6-1.0
-      category: "twitter_model",
-      severity: text.toLowerCase().includes('hate') || 
-               text.toLowerCase().includes('terrorist') ? "high" : 
-               text.toLowerCase().includes('kill') || 
-               text.toLowerCase().includes('eliminate') ? "medium" : "low",
-      detected_keywords: text.toLowerCase().includes('hate') ? ['hate'] : 
-                       text.toLowerCase().includes('terrorist') ? ['terrorist'] : 
-                       text.toLowerCase().includes('kill') ? ['kill'] :
-                       text.toLowerCase().includes('eliminate') ? ['eliminate'] : [],
-      explanation: text.toLowerCase().includes('hate') || 
-                  text.toLowerCase().includes('terrorist') ? 
-                  "Detected by Twitter-trained model." : 
-                  text.toLowerCase().includes('kill') || 
-                  text.toLowerCase().includes('eliminate') ?
-                  "Content shows concerning language patterns." :
-                  "Content appears safe based on analysis.",
+      is_hate_speech: isHateSpeech,
+      is_misinformation: isMisinformation,
+      confidence: confidence,
+      category: "enhanced_twitter_model_v2",
+      severity: severity,
+      detected_keywords: detectedKeywords.slice(0, 5), // Limit to 5 keywords
+      explanation: explanation,
       timestamp: new Date().toISOString(),
-      processing_time_ms: Math.floor(Math.random() * 10) + 3
+      processing_time_ms: Math.floor(Math.random() * 20) + 5,
+      risk_score: Math.floor(confidence * 100),
+      moderation_action: isHateSpeech ? "flag_for_review" : isMisinformation ? "fact_check_needed" : "no_action",
+      language: "en",
+      sentiment: isHateSpeech ? "negative" : "neutral"
     };
     
     return {
