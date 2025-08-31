@@ -6,6 +6,9 @@ import Badge from '../components/ui/Badge';
 import { Loader2, Send, AlertTriangle, CheckCircle, XCircle, Brain, Clock, Zap, Play, Pause, RefreshCw, Globe, MessageCircle, Heart, Share, Flag, Download } from 'lucide-react';
 import { detectHateSpeech } from '../services/apiService';
 
+// Note: jsPDF needs to be installed: npm install jspdf jspdf-autotable
+// For now, we'll use a simple text-based PDF generation
+
 const ModelTestingPage = () => {
   const { colors } = useTheme();
   const [inputText, setInputText] = useState('');
@@ -22,14 +25,20 @@ const ModelTestingPage = () => {
     platform: 'all',
     severity: 'all',
     category: 'all',
-    searchText: ''
+    searchText: '',
+    startDate: '',
+    endDate: '',
+    startTime: '',
+    endTime: ''
   });
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [showPostModal, setShowPostModal] = useState(false);
 
   // Mock social media posts data
   const mockSocialMediaPosts = [
     {
       id: 1,
-      content: "Just had the best ndolé ever! 🍲 Love this community in Douala!",
+      content: "Just had the best ndolé ever at Chez Wou in Douala! 🍲 The peanut sauce was perfect. Love this community! #DoualaFood #Cameroon",
       poster: {
         username: "douala_foodie_42",
         displayName: "Sarah Abena",
@@ -40,7 +49,7 @@ const ModelTestingPage = () => {
         joinDate: "2020-03-15"
       },
       platform: "Twitter",
-      timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(), // 5 minutes ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
       likes: 23,
       shares: 5,
       comments: 8,
@@ -50,7 +59,7 @@ const ModelTestingPage = () => {
     },
     {
       id: 2,
-      content: "All Anglophones are separatists and should be eliminated from our country! This is the truth!",
+      content: "All Anglophones are separatists and should be eliminated from our country! They're destroying Cameroon! This is the truth! #Unity #OneCameroon",
       poster: {
         username: "truth_seeker_88",
         displayName: "Jean Mbarga",
@@ -61,7 +70,7 @@ const ModelTestingPage = () => {
         joinDate: "2023-08-22"
       },
       platform: "Twitter",
-      timestamp: new Date(Date.now() - 1000 * 60 * 3).toISOString(), // 3 minutes ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 3).toISOString(),
       likes: 45,
       shares: 12,
       comments: 67,
@@ -71,7 +80,7 @@ const ModelTestingPage = () => {
     },
     {
       id: 3,
-      content: "BREAKING: Scientists discover that drinking hot water with bitter leaf cures HIV in 24 hours! Share this with everyone you know!",
+      content: "BREAKING: Scientists discover that drinking hot water with bitter leaf cures HIV in 24 hours! Share this with everyone you know! #Health #HIV #Cameroon",
       poster: {
         username: "health_guru_2024",
         displayName: "Dr. Nkem",
@@ -82,7 +91,7 @@ const ModelTestingPage = () => {
         joinDate: "2022-11-10"
       },
       platform: "Facebook",
-      timestamp: new Date(Date.now() - 1000 * 60 * 2).toISOString(), // 2 minutes ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 2).toISOString(),
       likes: 156,
       shares: 89,
       comments: 34,
@@ -92,7 +101,7 @@ const ModelTestingPage = () => {
     },
     {
       id: 4,
-      content: "Happy birthday to my amazing sister! 🎉 You're the best person I know and I'm so lucky to have you in my life!",
+      content: "Happy birthday to my amazing sister! 🎉 You're the best person I know and I'm so lucky to have you in my life! #Family #Love #Buea",
       poster: {
         username: "sister_love_99",
         displayName: "Emma Fon",
@@ -103,7 +112,7 @@ const ModelTestingPage = () => {
         joinDate: "2019-06-12"
       },
       platform: "Instagram",
-      timestamp: new Date(Date.now() - 1000 * 60 * 1).toISOString(), // 1 minute ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 1).toISOString(),
       likes: 89,
       shares: 12,
       comments: 23,
@@ -113,7 +122,7 @@ const ModelTestingPage = () => {
     },
     {
       id: 5,
-      content: "The government is hiding oil money in Swiss banks and they're controlling our minds with witchcraft! Wake up Cameroonians!",
+      content: "The government is hiding oil money in Swiss banks and they're controlling our minds with witchcraft! Wake up Cameroonians! #Corruption #Truth #Cameroon",
       poster: {
         username: "truth_bringer_777",
         displayName: "Mike Ngu",
@@ -124,7 +133,7 @@ const ModelTestingPage = () => {
         joinDate: "2021-04-18"
       },
       platform: "Twitter",
-      timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 seconds ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
       likes: 23,
       shares: 45,
       comments: 78,
@@ -134,7 +143,7 @@ const ModelTestingPage = () => {
     },
     {
       id: 6,
-      content: "We need to kill all the Bamileke people and take back our country! No more mercy!",
+      content: "We need to kill all the Bamileke people and take back our country! No more mercy! They're stealing our resources! #Justice #Cameroon",
       poster: {
         username: "patriot_warrior",
         displayName: "Robert Ndi",
@@ -145,7 +154,7 @@ const ModelTestingPage = () => {
         joinDate: "2023-12-01"
       },
       platform: "Facebook",
-      timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(), // 15 seconds ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
       likes: 67,
       shares: 23,
       comments: 89,
@@ -155,7 +164,7 @@ const ModelTestingPage = () => {
     },
     {
       id: 7,
-      content: "Just finished reading an amazing book about climate change solutions for the Sahel region. We can make a difference together! 🌱",
+      content: "Just finished reading an amazing book about climate change solutions for the Sahel region. We can make a difference together! 🌱 #ClimateAction #Sahel #Maroua",
       poster: {
         username: "eco_warrior_2024",
         displayName: "Lisa Tchokouani",
@@ -166,7 +175,7 @@ const ModelTestingPage = () => {
         joinDate: "2021-02-14"
       },
       platform: "LinkedIn",
-      timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(), // 45 seconds ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
       likes: 34,
       shares: 8,
       comments: 12,
@@ -176,7 +185,7 @@ const ModelTestingPage = () => {
     },
     {
       id: 8,
-      content: "All Fulani people control the cattle trade and banks! They're plotting against us!",
+      content: "All Fulani people control the cattle trade and banks! They're plotting against us! #Fulani #Conspiracy #Ngaoundere",
       poster: {
         username: "real_truth_999",
         displayName: "Anonymous User",
@@ -187,7 +196,7 @@ const ModelTestingPage = () => {
         joinDate: "2024-01-15"
       },
       platform: "Twitter",
-      timestamp: new Date(Date.now() - 1000 * 60 * 10).toISOString(), // 10 seconds ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
       likes: 12,
       shares: 3,
       comments: 45,
@@ -197,7 +206,7 @@ const ModelTestingPage = () => {
     },
     {
       id: 9,
-      content: "Amazing sunset over Mount Cameroon tonight! Nature is truly beautiful and healing. Grateful for moments like this ✨",
+      content: "Amazing sunset over Mount Cameroon tonight! Nature is truly beautiful and healing. Grateful for moments like this ✨ #MountCameroon #Limbe #Nature",
       poster: {
         username: "nature_lover_88",
         displayName: "David Manga",
@@ -208,7 +217,7 @@ const ModelTestingPage = () => {
         joinDate: "2020-09-22"
       },
       platform: "Instagram",
-      timestamp: new Date(Date.now() - 1000 * 60 * 20).toISOString(), // 20 seconds ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 20).toISOString(),
       likes: 67,
       shares: 15,
       comments: 9,
@@ -218,7 +227,7 @@ const ModelTestingPage = () => {
     },
     {
       id: 10,
-      content: "The deep state is using traditional healers to implant microchips! Don't trust the mainstream media!",
+      content: "The deep state is using traditional healers to implant microchips! Don't trust the mainstream media! #Conspiracy #TraditionalHealers #Bertoua",
       poster: {
         username: "freedom_fighter_2024",
         displayName: "Patricia Nguemo",
@@ -229,7 +238,7 @@ const ModelTestingPage = () => {
         joinDate: "2023-05-10"
       },
       platform: "Facebook",
-      timestamp: new Date(Date.now() - 1000 * 60 * 8).toISOString(), // 8 seconds ago
+      timestamp: new Date(Date.now() - 1000 * 60 * 8).toISOString(),
       likes: 89,
       shares: 156,
       comments: 234,
@@ -321,6 +330,40 @@ const ModelTestingPage = () => {
       );
     }
     
+    // Date filtering
+    if (filters.startDate) {
+      filtered = filtered.filter(post => {
+        const postDate = new Date(post.timestamp).toDateString();
+        const startDate = new Date(filters.startDate).toDateString();
+        return postDate >= startDate;
+      });
+    }
+    
+    if (filters.endDate) {
+      filtered = filtered.filter(post => {
+        const postDate = new Date(post.timestamp).toDateString();
+        const endDate = new Date(filters.endDate).toDateString();
+        return postDate <= endDate;
+      });
+    }
+    
+    // Time filtering
+    if (filters.startTime) {
+      filtered = filtered.filter(post => {
+        const postTime = new Date(post.timestamp).getHours() * 60 + new Date(post.timestamp).getMinutes();
+        const startTime = parseInt(filters.startTime.split(':')[0]) * 60 + parseInt(filters.startTime.split(':')[1]);
+        return postTime >= startTime;
+      });
+    }
+    
+    if (filters.endTime) {
+      filtered = filtered.filter(post => {
+        const postTime = new Date(post.timestamp).getHours() * 60 + new Date(post.timestamp).getMinutes();
+        const endTime = parseInt(filters.endTime.split(':')[0]) * 60 + parseInt(filters.endTime.split(':')[1]);
+        return postTime <= endTime;
+      });
+    }
+    
     setFilteredPosts(filtered);
   }, [filters, socialMediaPosts, analyzedPosts]);
 
@@ -360,6 +403,53 @@ const ModelTestingPage = () => {
     const a = document.createElement('a');
     a.href = url;
     a.download = `hate_speech_analysis_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // Download results as PDF
+  const downloadPDF = () => {
+    // Create a simple text-based report since jsPDF isn't installed
+    const reportContent = `
+HATE SPEECH DETECTION ANALYSIS REPORT
+Generated: ${new Date().toLocaleString()}
+Total Posts Analyzed: ${socialMediaPosts.length}
+Analyzed Posts: ${Object.keys(analyzedPosts).length}
+
+POST ANALYSIS SUMMARY:
+${socialMediaPosts.map(post => {
+  const analysis = analyzedPosts[post.id];
+  return `
+Post ID: ${post.id}
+Content: ${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}
+Platform: ${post.platform}
+Timestamp: ${new Date(post.timestamp).toLocaleString()}
+Likes: ${post.likes} | Comments: ${post.comments} | Shares: ${post.shares}
+Category: ${post.category}
+Severity: ${analysis?.severity || 'N/A'}
+Risk Score: ${analysis?.risk_score || 'N/A'}
+Confidence: ${analysis ? (analysis.confidence * 100).toFixed(1) + '%' : 'N/A'}
+${analysis?.detected_keywords?.length > 0 ? `Keywords: ${analysis.detected_keywords.join(', ')}` : ''}
+${analysis?.explanation ? `Explanation: ${analysis.explanation}` : ''}
+---`;
+}).join('')}
+
+FILTERS APPLIED:
+Platform: ${filters.platform}
+Severity: ${filters.severity}
+Category: ${filters.category}
+Search: ${filters.searchText || 'None'}
+Date Range: ${filters.startDate || 'None'} to ${filters.endDate || 'None'}
+Time Range: ${filters.startTime || 'None'} to ${filters.endTime || 'None'}
+    `;
+    
+    const blob = new Blob([reportContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hate_speech_analysis_${new Date().toISOString().split('T')[0]}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -503,7 +593,17 @@ const ModelTestingPage = () => {
               className="flex items-center gap-2"
             >
               <Download className="w-4 h-4" />
-              Download Results
+              Download JSON
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              onClick={downloadPDF}
+              disabled={socialMediaPosts.length === 0}
+              className="flex items-center gap-2"
+            >
+              📄
+              Download Report
             </Button>
             
             <div className="flex items-center gap-2">
@@ -596,7 +696,9 @@ const ModelTestingPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              
+              {/* Basic Filters */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
                 <div>
                   <label className="block text-xs mb-1" style={{ color: colors.textSecondary }}>Platform</label>
                   <select 
@@ -678,7 +780,11 @@ const ModelTestingPage = () => {
                         platform: 'all',
                         severity: 'all',
                         category: 'all',
-                        searchText: ''
+                        searchText: '',
+                        startDate: '',
+                        endDate: '',
+                        startTime: '',
+                        endTime: ''
                       })}
                       className="px-3 py-1"
                     >
@@ -687,11 +793,81 @@ const ModelTestingPage = () => {
                   </div>
                 </div>
               </div>
+              
+              {/* Date and Time Filters */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-xs mb-1" style={{ color: colors.textSecondary }}>Start Date</label>
+                  <input 
+                    type="date"
+                    value={filters.startDate}
+                    onChange={(e) => updateFilters({ startDate: e.target.value })}
+                    className="w-full px-2 py-1 text-sm border rounded"
+                    style={{ 
+                      backgroundColor: colors.bgSecondary,
+                      borderColor: colors.border,
+                      color: colors.text
+                    }}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-xs mb-1" style={{ color: colors.textSecondary }}>End Date</label>
+                  <input 
+                    type="date"
+                    value={filters.endDate}
+                    onChange={(e) => updateFilters({ endDate: e.target.value })}
+                    className="w-full px-2 py-1 text-sm border rounded"
+                    style={{ 
+                      backgroundColor: colors.bgSecondary,
+                      borderColor: colors.border,
+                      color: colors.text
+                    }}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-xs mb-1" style={{ color: colors.textSecondary }}>Start Time</label>
+                  <input 
+                    type="time"
+                    value={filters.startTime}
+                    onChange={(e) => updateFilters({ startTime: e.target.value })}
+                    className="w-full px-2 py-1 text-sm border rounded"
+                    style={{ 
+                      backgroundColor: colors.bgSecondary,
+                      borderColor: colors.border,
+                      color: colors.text
+                    }}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-xs mb-1" style={{ color: colors.textSecondary }}>End Time</label>
+                  <input 
+                    type="time"
+                    value={filters.endTime}
+                    onChange={(e) => updateFilters({ endTime: e.target.value })}
+                    className="w-full px-2 py-1 text-sm border rounded"
+                    style={{ 
+                      backgroundColor: colors.bgSecondary,
+                      borderColor: colors.border,
+                      color: colors.text
+                    }}
+                  />
+                </div>
+              </div>
             </Card>
             
             <div className="space-y-4">
               {(Object.values(filters).some(filter => filter !== 'all' && filter !== '') ? filteredPosts : socialMediaPosts).map((post) => (
-                <Card key={post.id} className="p-4">
+                <Card 
+                  key={post.id} 
+                  className="p-4 cursor-pointer hover:shadow-lg transition-all duration-200"
+                  onClick={() => {
+                    setSelectedPost(post);
+                    setShowPostModal(true);
+                  }}
+                >
                   <div className="flex items-start gap-3">
                     {/* Poster Avatar */}
                     <img 
@@ -823,9 +999,9 @@ const ModelTestingPage = () => {
                             </div>
                             <div className="text-center">
                               <div className="font-bold capitalize" style={{ 
-                                color: analyzedPosts[post.id].severity === 'high' ? colors.error :
-                                       analyzedPosts[post.id].severity === 'medium' ? colors.warning :
-                                       colors.success
+                                color: analyzedPosts[post.id].severity === 'high' ? '#ef4444' :
+                                       analyzedPosts[post.id].severity === 'medium' ? '#f59e0b' :
+                                       '#10b981'
                               }}>
                                 {analyzedPosts[post.id].severity}
                               </div>
@@ -836,25 +1012,6 @@ const ModelTestingPage = () => {
                                 {analyzedPosts[post.id].risk_score}
                               </div>
                               <div style={{ color: colors.textSecondary }}>Risk Score</div>
-                            </div>
-                          </div>
-                          
-                          {/* Severity Color Bar */}
-                          <div className="mb-3">
-                            <div className="text-xs mb-1" style={{ color: colors.textSecondary }}>
-                              Severity Level:
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                              <div 
-                                className="h-2 rounded-full transition-all duration-300"
-                                style={{
-                                  width: analyzedPosts[post.id].severity === 'high' ? '100%' :
-                                         analyzedPosts[post.id].severity === 'medium' ? '66%' : '33%',
-                                  backgroundColor: analyzedPosts[post.id].severity === 'high' ? colors.error :
-                                                analyzedPosts[post.id].severity === 'medium' ? colors.warning :
-                                                colors.success
-                                }}
-                              ></div>
                             </div>
                           </div>
                           
@@ -1205,6 +1362,359 @@ const ModelTestingPage = () => {
           </p>
         </div>
       </div>
+
+      {/* Post Detail Modal */}
+      {showPostModal && selectedPost && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold" style={{ color: colors.text }}>
+                  Post Details
+                </h2>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowPostModal(false)}
+                  className="p-2"
+                >
+                  ✕
+                </Button>
+              </div>
+              
+              <div className="space-y-6">
+                {/* Post Content */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-2" style={{ color: colors.text }}>
+                    Content
+                  </h3>
+                  <p className="text-lg p-4 rounded-lg" style={{ backgroundColor: colors.bgSecondary, color: colors.text }}>
+                    {selectedPost.content}
+                  </p>
+                </div>
+                
+                {/* Poster Information */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-2" style={{ color: colors.text }}>
+                    Poster Information
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4 p-4 rounded-lg" style={{ backgroundColor: colors.bgSecondary }}>
+                    <div>
+                      <span style={{ color: colors.textSecondary }}>Display Name:</span>
+                      <span className="ml-2 font-medium" style={{ color: colors.text }}>
+                        {selectedPost.poster.displayName}
+                      </span>
+                    </div>
+                    <div>
+                      <span style={{ color: colors.textSecondary }}>Username:</span>
+                      <span className="ml-2 font-medium" style={{ color: colors.text }}>
+                        @{selectedPost.poster.username}
+                      </span>
+                    </div>
+                    <div>
+                      <span style={{ color: colors.textSecondary }}>Followers:</span>
+                      <span className="ml-2 font-medium" style={{ color: colors.text }}>
+                        {selectedPost.poster.followers.toLocaleString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span style={{ color: colors.textSecondary }}>Location:</span>
+                      <span className="ml-2 font-medium" style={{ color: colors.text }}>
+                        {selectedPost.poster.location}
+                      </span>
+                    </div>
+                    <div>
+                      <span style={{ color: colors.textSecondary }}>Joined:</span>
+                      <span className="ml-2 font-medium" style={{ color: colors.text }}>
+                        {new Date(selectedPost.poster.joinDate).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span style={{ color: colors.textSecondary }}>Platform:</span>
+                      <span className="ml-2 font-medium" style={{ color: colors.text }}>
+                        {selectedPost.poster.platform}
+                      </span>
+                    </div>
+                    <div>
+                      <span style={{ color: colors.textSecondary }}>Verified:</span>
+                      <span className="ml-2 font-medium" style={{ color: colors.text }}>
+                        {selectedPost.poster.verified ? 'Yes' : 'No'}
+                      </span>
+                    </div>
+                    <div>
+                      <span style={{ color: colors.textSecondary }}>Posted:</span>
+                      <span className="ml-2 font-medium" style={{ color: colors.text }}>
+                        {new Date(selectedPost.timestamp).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Engagement Metrics */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-2" style={{ color: colors.text }}>
+                    Engagement Metrics
+                  </h3>
+                  <div className="grid grid-cols-3 gap-4 p-4 rounded-lg" style={{ backgroundColor: colors.bgSecondary }}>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold" style={{ color: colors.primary }}>
+                        {selectedPost.likes}
+                      </div>
+                      <div style={{ color: colors.textSecondary }}>Likes</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold" style={{ color: colors.secondary }}>
+                        {selectedPost.comments}
+                      </div>
+                      <div style={{ color: colors.textSecondary }}>Comments</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold" style={{ color: colors.warning }}>
+                        {selectedPost.shares}
+                      </div>
+                      <div style={{ color: colors.textSecondary }}>Shares</div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* AI Analysis Results */}
+                {analyzedPosts[selectedPost.id] && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2" style={{ color: colors.text }}>
+                      AI Analysis Results
+                    </h3>
+                    <div className="p-4 rounded-lg border-l-4" style={{ 
+                      backgroundColor: colors.bgSecondary,
+                      borderLeftColor: analyzedPosts[selectedPost.id].severity === 'high' ? '#ef4444' : 
+                                      analyzedPosts[selectedPost.id].severity === 'medium' ? '#f59e0b' : '#10b981'
+                    }}>
+                      <div className="grid grid-cols-3 gap-4 mb-4">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold" style={{ color: colors.primary }}>
+                            {(analyzedPosts[selectedPost.id].confidence * 100).toFixed(0)}%
+                          </div>
+                          <div style={{ color: colors.textSecondary }}>Confidence</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-bold capitalize text-lg" style={{ 
+                            color: analyzedPosts[selectedPost.id].severity === 'high' ? '#ef4444' :
+                                   analyzedPosts[selectedPost.id].severity === 'medium' ? '#f59e0b' :
+                                   '#10b981'
+                          }}>
+                            {analyzedPosts[selectedPost.id].severity}
+                          </div>
+                          <div style={{ color: colors.textSecondary }}>Severity</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold" style={{ color: colors.secondary }}>
+                            {analyzedPosts[selectedPost.id].risk_score}
+                          </div>
+                          <div style={{ color: colors.textSecondary }}>Risk Score</div>
+                        </div>
+                      </div>
+                      
+                      {analyzedPosts[selectedPost.id].detected_keywords && analyzedPosts[selectedPost.id].detected_keywords.length > 0 && (
+                        <div className="mb-4">
+                          <div className="text-sm mb-2" style={{ color: colors.textSecondary }}>
+                            Detected Keywords:
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {analyzedPosts[selectedPost.id].detected_keywords.map((keyword, idx) => (
+                              <Badge key={idx} variant="danger" size="sm">
+                                {keyword}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {analyzedPosts[selectedPost.id].explanation && (
+                        <div>
+                          <div className="text-sm mb-2" style={{ color: colors.textSecondary }}>
+                            Analysis Explanation:
+                          </div>
+                          <p className="text-sm" style={{ color: colors.text }}>
+                            {analyzedPosts[selectedPost.id].explanation}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Category-Specific Information */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-2" style={{ color: colors.text }}>
+                    {selectedPost.category === 'hate_speech' ? 'Hate Speech Analysis' :
+                     selectedPost.category === 'misinformation' ? 'Misinformation Analysis' :
+                     selectedPost.category === 'conspiracy' ? 'Conspiracy Theory Analysis' :
+                     'Positive Content Analysis'}
+                  </h3>
+                  
+                  {selectedPost.category === 'hate_speech' && (
+                    <div className="p-4 rounded-lg" style={{ backgroundColor: colors.bgSecondary }}>
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-medium mb-2" style={{ color: colors.error }}>
+                            🚨 Hate Speech Indicators Detected
+                          </h4>
+                          <ul className="text-sm space-y-1" style={{ color: colors.text }}>
+                            <li>• Ethnic targeting and discrimination</li>
+                            <li>• Calls for violence or elimination</li>
+                            <li>• Dehumanizing language</li>
+                            <li>• Incitement to hatred</li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-medium mb-2" style={{ color: colors.text }}>
+                            Recommended Actions:
+                          </h4>
+                          <ul className="text-sm space-y-1" style={{ color: colors.text }}>
+                            <li>• Flag for immediate review</li>
+                            <li>• Consider account suspension</li>
+                            <li>• Report to authorities if necessary</li>
+                            <li>• Monitor for similar content</li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-medium mb-2" style={{ color: colors.text }}>
+                            Context Analysis:
+                          </h4>
+                          <p className="text-sm" style={{ color: colors.text }}>
+                            This content targets specific ethnic groups in Cameroon and promotes violence. 
+                            It violates platform policies and may have legal implications.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {selectedPost.category === 'misinformation' && (
+                    <div className="p-4 rounded-lg" style={{ backgroundColor: colors.bgSecondary }}>
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-medium mb-2" style={{ color: colors.warning }}>
+                            ⚠️ Misinformation Indicators Detected
+                          </h4>
+                          <ul className="text-sm space-y-1" style={{ color: colors.text }}>
+                            <li>• False health claims</li>
+                            <li>• Unverified scientific claims</li>
+                            <li>• Sensationalist language</li>
+                            <li>• Urgency to share</li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-medium mb-2" style={{ color: colors.text }}>
+                            Recommended Actions:
+                          </h4>
+                          <ul className="text-sm space-y-1" style={{ color: colors.text }}>
+                            <li>• Flag for fact-checking</li>
+                            <li>• Add warning labels</li>
+                            <li>• Reduce distribution</li>
+                            <li>• Provide fact-check links</li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-medium mb-2" style={{ color: colors.text }}>
+                            Fact-Check Notes:
+                          </h4>
+                          <p className="text-sm" style={{ color: colors.text }}>
+                            Claims about traditional medicine curing serious diseases lack scientific evidence. 
+                            This type of misinformation can be harmful to public health.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {selectedPost.category === 'conspiracy' && (
+                    <div className="p-4 rounded-lg" style={{ backgroundColor: colors.bgSecondary }}>
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-medium mb-2" style={{ color: colors.warning }}>
+                            🔍 Conspiracy Theory Indicators Detected
+                          </h4>
+                          <ul className="text-sm space-y-1" style={{ color: colors.text }}>
+                            <li>• Secret government plots</li>
+                            <li>• Hidden control mechanisms</li>
+                            <li>• "Wake up" messaging</li>
+                            <li>• Anti-establishment rhetoric</li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-medium mb-2" style={{ color: colors.text }}>
+                            Recommended Actions:
+                          </h4>
+                          <ul className="text-sm space-y-1" style={{ color: colors.text }}>
+                            <li>• Flag for review</li>
+                            <li>• Add context labels</li>
+                            <li>• Reduce algorithmic promotion</li>
+                            <li>• Provide factual counter-narratives</li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-medium mb-2" style={{ color: colors.text }}>
+                            Analysis Notes:
+                          </h4>
+                          <p className="text-sm" style={{ color: colors.text }}>
+                            This content promotes unfounded conspiracy theories about government corruption. 
+                            While corruption concerns may be valid, the specific claims lack evidence.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {selectedPost.category === 'positive' && (
+                    <div className="p-4 rounded-lg" style={{ backgroundColor: colors.bgSecondary }}>
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-medium mb-2" style={{ color: colors.success }}>
+                            ✅ Positive Content Indicators
+                          </h4>
+                          <ul className="text-sm space-y-1" style={{ color: colors.text }}>
+                            <li>• Community building</li>
+                            <li>• Cultural celebration</li>
+                            <li>• Educational content</li>
+                            <li>• Inspirational messaging</li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-medium mb-2" style={{ color: colors.text }}>
+                            Content Value:
+                          </h4>
+                          <ul className="text-sm space-y-1" style={{ color: colors.text }}>
+                            <li>• Promotes social cohesion</li>
+                            <li>• Celebrates local culture</li>
+                            <li>• Provides educational value</li>
+                            <li>• Encourages positive engagement</li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-medium mb-2" style={{ color: colors.text }}>
+                            Community Impact:
+                          </h4>
+                          <p className="text-sm" style={{ color: colors.text }}>
+                            This content contributes positively to the Cameroonian online community by 
+                            celebrating local culture, sharing knowledge, and building connections.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
